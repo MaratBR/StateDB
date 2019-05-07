@@ -5,19 +5,17 @@
 
 #pragma once
 
-#ifdef MAKEDLL
-#  define EXPORT __declspec(dllexport)
-#else
-#  define EXPORT __declspec(dllimport)
-#endif
-
 #include "targetver.h"
-#include <ios>
+#include <ostream>
+#include <istream>
+#include <functional>
+#include <vector>
 
 #define WIN32_LEAN_AND_MEAN             // Исключите редко используемые компоненты из заголовков Windows
-// Файлы заголовков Windows
-#include <windows.h>
 
 
-
+#include "globals.h"
+#include "config.h"
+#include "utils.h"
+#include "hash.h"
 // установите здесь ссылки на дополнительные заголовки, требующиеся для программы
