@@ -152,6 +152,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="bplus_tree.h" />
+    <ClInclude Include="bpt.h" />
     <ClInclude Include="bpt_base.h" />
     <ClInclude Include="bpt_internal.h" />
     <ClInclude Include="config.h" />

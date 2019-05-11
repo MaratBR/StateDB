@@ -64,13 +64,14 @@ namespace statedb {
 				}
 				else
 				{
-					while (node != nullptr && node->m_next != nullptr && node->m_next->m_pair.key < key)
+					while (node->m_next != nullptr && node->m_next->m_pair.key <= key)
 						node = node->m_next;
 
-					if (node->m_next->m_pair.key == key)
+					if (node->m_pair.key == key)
 					{
 						delete newNode;
-						node->m_next->m_pair.val = val;
+						node->m_pair.val = val;
+						return; // We don't want to increment size since we didn't actually add anything so we just return
 					}
 					else
 					{
@@ -137,6 +138,7 @@ namespace statedb {
 							delete nodeTmp;
 							return true;
 						}
+						node = node->m_next;
 					}
 
 					m_size++; // Delete wasn't performed
@@ -147,14 +149,17 @@ namespace statedb {
 			TKey get_root_key() const { return m_root->m_pair.key; }
 
 #if DEBUG
-			void debug_print()
+			void debug_print(size_t depth = 0)
 			{
+				print_depth(depth);
+				std::cout << "<list>";
 				node_type* n = this->m_root;
 				while (n != nullptr)
 				{
 					std::cout << n->m_pair.key << '=' << n->m_pair.val << ' ';
 					n = n->m_next;
 				}
+				std::cout << "</list>\n";
 			}
 #endif
 		private:

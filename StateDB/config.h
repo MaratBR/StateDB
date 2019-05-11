@@ -28,6 +28,10 @@
 
 #if DEBUG
 #	include <iostream>
+constexpr void print_depth(size_t depth)
+{
+	while (depth-- > 0) std::cout << '\t';
+}
 #endif
 
 // B+ tree implementation config

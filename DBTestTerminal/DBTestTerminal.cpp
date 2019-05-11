@@ -4,21 +4,20 @@
 #include "pch.h"
 #include <iostream>
 
-#include <StateDB/leaf.h>
+#include <StateDB/bpt.h>
+#include <chrono>
 
 using namespace statedb::bpt;
 using namespace std;
 
-
-
-int main()
+void leaf_test()
 {
-	leaf<size_t, char, 5> l;
+	leaf<size_t, char, 5> l(0, 'a');
 
 	size_t i = 0;
 	while (true)
 	{
-		
+
 		char val;
 		cin >> val;
 		l.insert(i++, val);
@@ -26,7 +25,40 @@ int main()
 			l.debug_print();
 		)
 	}
+}
 
+void internal_test1()
+{
+	leaf<size_t, char, 5> l(100, 'a');
+	bpt_internal<size_t, char, 5> i(&l);
+}
+
+void tree_test0()
+{
+	tree<size_t, size_t, 4> t;
+
+	auto tm = chrono::system_clock::now();
+	for (size_t i = 0; i < 10; i++)
+	{
+		t.set(i, i);
+	}
+	t.print_debug();
+	cout << (double)chrono::duration_cast<chrono::nanoseconds>(chrono::system_clock::now() - tm).count() / 1000000.0 << "ms";
+	cout << "Testing..." << endl;
+
+	for (size_t i = 0; i < 5; i++)
+	{
+		if (t.get(i) == nullptr || *t.get(i) != i)
+		{
+			std::cout << i << endl;
+		}
+	}
+}
+
+int main()
+{
+	
+	tree_test0();
 	
 }
 

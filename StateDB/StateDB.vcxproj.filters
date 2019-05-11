@@ -72,6 +72,9 @@
     <ClInclude Include="bpt_base.h">
       <Filter>Файлы заголовков\bplus</Filter>
     </ClInclude>
+    <ClInclude Include="bpt.h">
+      <Filter>Файлы заголовков\bplus</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
