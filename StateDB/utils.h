@@ -42,8 +42,8 @@ namespace statedb {
 		}
 
 
-#define WRITE_OBJECT_SPECIALIZATION(t, ...) template<__VA_ARGS__> void ::statedb::utils::write_object<t>(t & _Val, std::ostream & _Stream)
-#define READ_OBJECT_SPECIALIZATION(t, ...) template<__VA_ARGS__> void ::statedb::utils::read_object<t>(t * _Dest, std::istream & _Stream)
+#define WRITE_OBJECT_SPECIALIZATION(t) template<> void ::statedb::utils::write_object<t>(t & _Val, std::ostream & _Stream)
+#define READ_OBJECT_SPECIALIZATION(t) template<> void ::statedb::utils::read_object<t>(t * _Dest, std::istream & _Stream)
 #define WRITE_OBJECT_F(field) _Stream.write(reinterpret_cast<char*>(&_Val.field), sizeof(decltype(_Val.field)))
 
 		void read_object_generic(void * dest, size_t size, std::istream & i);

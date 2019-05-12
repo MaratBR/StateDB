@@ -1,9 +1,4 @@
-﻿// stdafx.h: включаемый файл для стандартных системных включаемых файлов
-// или включаемых файлов для конкретного проекта, которые часто используются, но
-// нечасто изменяются
-//
-
-#pragma once
+﻿#pragma once
 
 #include "targetver.h"
 #include <ostream>
@@ -11,11 +6,11 @@
 #include <functional>
 #include <vector>
 
-#define WIN32_LEAN_AND_MEAN             // Исключите редко используемые компоненты из заголовков Windows
+#define WIN32_LEAN_AND_MEAN
 
 
 #include "globals.h"
 #include "config.h"
+#include "features_impl.h"
 #include "utils.h"
 #include "hash.h"
-// установите здесь ссылки на дополнительные заголовки, требующиеся для программы

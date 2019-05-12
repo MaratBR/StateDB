@@ -27,6 +27,7 @@ namespace statedb {
 			bool is_leaf() const noexcept override { return false; }
 			TKey primary_key() const override { return m_root->m_pair.key; }
 
+			/// \mainpage A
 			// Sets value and if required splits internal node and returns new root.
 			// Otherwise returns nullptr
 			bpt_internal* set(TKey key, TVal val)
@@ -63,6 +64,8 @@ namespace statedb {
 				return nullptr;
 			}
 
+			// Deletes key from internal node's children,
+			// 
 			bool delete_key(TKey key)
 			{
 				auto * child = get_child_ge(key);
@@ -195,9 +198,8 @@ namespace statedb {
 
 			// Returns list's node, that contains pointer to the child
 			// associated with given key
-			// IGNORED m_lesser. BE CAREFUL
-			//
-			// ln stand for "list node" which means it actually returns not a child itself
+			// IGNORING m_lesser. BE CAREFUL
+			// 'ln' stand for "list node" which means it actually returns not a child itself
 			// but linked list's node that contains it
 			list_node_type* get_child_ln_ge(TKey key)
 			{
@@ -239,11 +241,12 @@ namespace statedb {
 				bpt_internal* newInternal = new bpt_internal();
 
 				// Init m_lesser and other
-				newInternal->m_lesser = new leaf<TKey, TVal, ORDER>();
+				
 
 				// Move middle node
 				size_t middle = m_size / 2; // index of middle node
 				auto * middleNode = m_root->skip(middle);
+				newInternal->m_lesser = middleNode->m_pair.val; 
 
 				newInternal->m_root = middleNode->m_next;
 

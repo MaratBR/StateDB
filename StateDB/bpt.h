@@ -1,4 +1,5 @@
 #pragma once
+#include "stdafx.h"
 #include "bpt_internal.h"
 
 namespace statedb {
@@ -7,6 +8,10 @@ namespace statedb {
 		class tree
 		{
 		public:
+#if STATEDB_FEATURE_RAM_MONITORING
+			using _RAM_MONITORING_FLAG_ = none_t;
+#endif
+
 			TVal* get(TKey key)
 			{
 				if (m_root == nullptr)
@@ -61,3 +66,26 @@ namespace statedb {
 		};
 	}
 }
+
+template<size_t ORDER>
+struct order_t
+{
+	const size_t order = ORDER;
+};
+
+
+/*
+#if STATEDB_FEATURE_RAM_MONITORING
+
+_RAM_MONITORING_NS_BEGIN
+
+template<typename TKey, typename TVal, size_t ORDER>
+size_t _RAM_MONITORING_FN_NAME(statedb::bpt::tree<TKey, TVal, ORDER>& t)
+{
+	return 42;
+}
+
+_RAM_MONITORING_NS_END
+
+#endif
+*/

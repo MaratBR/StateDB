@@ -156,10 +156,10 @@
     <ClInclude Include="bpt_base.h" />
     <ClInclude Include="bpt_internal.h" />
     <ClInclude Include="config.h" />
+    <ClInclude Include="features_impl.h" />
     <ClInclude Include="leaf.h" />
     <ClInclude Include="leaf_node.h" />
     <ClInclude Include="list.h" />
-    <ClInclude Include="_bplus_tree.h" />
     <ClInclude Include="db_header.h" />
     <ClInclude Include="db_vector.h" />
     <ClInclude Include="dtype_decl.h" />

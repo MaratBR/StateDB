@@ -1,39 +1,22 @@
 #pragma once
 
 
-#define _FALLBACK_DEBUG false
-#ifndef DEBUG
-#	ifdef _DEBUG
-#		define DEBUG _DEBUG
-#	else
-#		define DEBUG _FALLBACK_DEBUG
-#	endif
+#ifndef STATEDB_FEATURE_ITERATION
+#	define STATEDB_FEATURE_ITERATION true
+#endif
+
+#ifndef STATEDB_FEATURE_RAM_MONITORING
+#	define STATEDB_FEATURE_RAM_MONITORING true
+#endif
+
+#define STATEDB_CHANGES_TRACING_MODE_ALWAYS 2	// Always notify clients about new value
+#define STATEDB_CHANGES_TRACING_MODE_DEMAND 1	// Don't notify but support CACHE_CHECK_CMD
+#define STATEDB_CHANGES_TRACING_MODE_DISABLED 0 // Don't notify and don't support CACHE_CHECK_CMD
+
+#ifndef STATEDB_CHANGES_TRACING_MODE
+#	define STATEDB_CHANGES_TRACING_MODE STATEDB_CHANGES_TRACING_MODE_ALWAYS
 #endif
 
 
-#if DEBUG
-#	define _D(x) x
-#else
-#	define _D(x) /*** - debug only code (excluded) - ***/
-#endif
 
-#if DEBUG
-#	define _DD(x, y) x
-#else
-#	define _DD(x, y) y
-#endif
-
-#define _LOG(x)  do { ::std::cerr << (x); } while(0)
-#define DEBUG_LOG(x) _D( _LOG(x) )
-
-#if DEBUG
-#	include <iostream>
-constexpr void print_depth(size_t depth)
-{
-	while (depth-- > 0) std::cout << '\t';
-}
-#endif
-
-// B+ tree implementation config
-#define BPT_ITERATION true
 

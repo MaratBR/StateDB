@@ -6,9 +6,15 @@
 
 #include <StateDB/bpt.h>
 #include <chrono>
+#include <thread>
 
 using namespace statedb::bpt;
 using namespace std;
+
+struct huge_state
+{
+	byte_t data[1024 * 1024 * 20];
+};
 
 void leaf_test()
 {
@@ -35,20 +41,27 @@ void internal_test1()
 
 void tree_test0()
 {
-	tree<size_t, size_t, 4> t;
+	tree<size_t, huge_state*, 4> t;
+	size_t treeSize = statedb::ram_monitoring::get_ram_size(t);
+	cout << "tree size: " << treeSize << endl;
+	const int count = 0xff;
 
 	auto tm = chrono::system_clock::now();
-	for (size_t i = 0; i < 10; i++)
+	for (size_t i = 0; i < count; i++)
 	{
-		t.set(i, i);
+		huge_state* s = new huge_state();
+		this_thread::sleep_for(20ms);
+		t.set(i, s);
+		cout << (i + 1) << '/' << count << ' ' << ((float)(i+1) / (float)count * 100.0f) << '%' << '\r';
 	}
-	t.print_debug();
 	cout << (double)chrono::duration_cast<chrono::nanoseconds>(chrono::system_clock::now() - tm).count() / 1000000.0 << "ms";
 	cout << "Testing..." << endl;
 
-	for (size_t i = 0; i < 5; i++)
+	cin.get();
+
+	for (size_t i = 0; i < count; i++)
 	{
-		if (t.get(i) == nullptr || *t.get(i) != i)
+		if (t.get(i) == nullptr)
 		{
 			std::cout << i << endl;
 		}
@@ -61,14 +74,3 @@ int main()
 	tree_test0();
 	
 }
-
-// Запуск программы: CTRL+F5 или меню "Отладка" > "Запуск без отладки"
-// Отладка программы: F5 или меню "Отладка" > "Запустить отладку"
-
-// Советы по началу работы 
-//   1. В окне обозревателя решений можно добавлять файлы и управлять ими.
-//   2. В окне Team Explorer можно подключиться к системе управления версиями.
-//   3. В окне "Выходные данные" можно просматривать выходные данные сборки и другие сообщения.
-//   4. В окне "Список ошибок" можно просматривать ошибки.
-//   5. Последовательно выберите пункты меню "Проект" > "Добавить новый элемент", чтобы создать файлы кода, или "Проект" > "Добавить существующий элемент", чтобы добавить в проект существующие файлы кода.
-//   6. Чтобы снова открыть этот проект позже, выберите пункты меню "Файл" > "Открыть" > "Проект" и выберите SLN-файл.
