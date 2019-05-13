@@ -1,5 +1,6 @@
 #pragma once
 #include "stdafx.h"
+#include "flags.h"
 
 using namespace std;
 
@@ -10,14 +11,17 @@ namespace statedb {
 	struct dtype_decl
 	{
 		dtype_id_t id;
+		flags_t<2> _flags;
 		bool is_dynamic;
+#		define UNDEFINED_DTYPE_SIZE SIZE_MAX    // data type can have any size
+		size_t max_length; // for dynamic types only
 		vector<field_t> fields;
 	};
 
 	WRITE_OBJECT_SPECIALIZATION(dtype_decl)
 	{
 		write_object(_Val.id, _Stream);
-		write_object(_Val.is_dynamic, _Stream);
+		write_object(_Val._flags, _Stream);
 
 		if (!_Val.is_dynamic)
 		{
@@ -33,10 +37,13 @@ namespace statedb {
 	READ_OBJECT_SPECIALIZATION(dtype_decl)
 	{
 		read_object(&_Dest->id, _Stream);
-		read_object(&_Dest->is_dynamic, _Stream);
+		read_object(&_Dest->_flags, _Stream);
+
+		_Dest->is_dynamic = _Dest->_flags.get<0>();
 
 		if (!_Dest->is_dynamic)
 		{
+			// Read sequence of types ID's 
 			size_t length;
 			read_object(&length, _Stream);
 			field_t col;
@@ -45,6 +52,11 @@ namespace statedb {
 				read_object(&col, _Stream);
 				_Dest->fields.push_back(col);
 			}
+		}
+		else
+		{
+			// Read max_length
+			read_object(&_Dest->max_length, _Stream);
 		}
 	}
 }

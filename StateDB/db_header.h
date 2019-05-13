@@ -2,7 +2,10 @@
 #include "stdafx.h"
 
 namespace statedb {
-	struct db_magic { const char value[7] = "StAtE1"; };
+#	define DB_MAGIC "StAtE1"
+#	define DB_VERSION 1
+
+	struct db_magic { const char value[7] = DB_MAGIC; };
 
 	struct db_pointers
 	{
@@ -13,7 +16,7 @@ namespace statedb {
 
 	struct db_meta
 	{
-		const byte_t version = 1;
+		const byte_t version = DB_VERSION;
 		db_pointers pointers;
 	};
 
@@ -42,8 +45,6 @@ namespace statedb {
 		db_info info;
 	};
 }
-
-MAKE_HASHABLE(statedb::db_info, _.description, _.name)
 
 // https://gist.github.com/codebrainz/8ece2a9015a3ed0d260f
 namespace std
