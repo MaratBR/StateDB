@@ -19,9 +19,9 @@
 #endif
 
 #if DEBUG
-#	define _DD(x, y) x
+#	define _DD(debug, release) debug
 #else
-#	define _DD(x, y) y
+#	define _DD(debug, release) release
 #endif
 
 #define _LOG(x)  do { _STD cerr << (x); } while(0)
@@ -46,13 +46,14 @@ using byte_t = unsigned char;
 
 
 // https://stackoverflow.com/questions/87372/check-if-a-class-has-a-member-function-of-a-given-signature
-#define STATIC_SIGNATURE_CHECKER(name, return_type, ...)							\
-template<typename T>																\
-class has_sig_ ## name																\
-{																					\
-	template<typename U, return_type(U::*)(__VA_ARGS__) const> struct SFINAE {};	\
-	template<typename U> static char _test(SFINAE<U, &U::name>*);					\
-	template<typename U> static int _test(...);										\
-public:																				\
-	static const bool value = sizeof(_test<T>(0)) == sizeof(char);					\
-};
+// This is not required anymore, but I'll keep that just yet 
+//#define STATIC_SIGNATURE_CHECKER(name, return_type, ...)							\
+//template<typename T>																\
+//class has_sig_ ## name																\
+//{																					\
+//	template<typename U, return_type(U::*)(__VA_ARGS__) const> struct SFINAE {};	\
+//	template<typename U> static char _test(SFINAE<U, &U::name>*);					\
+//	template<typename U> static int _test(...);										\
+//public:																				\
+//	static const bool value = sizeof(_test<T>(0)) == sizeof(char);					\
+//};

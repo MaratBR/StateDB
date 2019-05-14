@@ -72,15 +72,19 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
+    <IncludePath>$(SolutionDir)StateDB\includes;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
+    <IncludePath>$(SolutionDir)StateDB\includes;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
+    <IncludePath>$(SolutionDir)StateDB\includes;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
+    <IncludePath>$(SolutionDir)StateDB\includes;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -156,6 +160,8 @@
     <ClInclude Include="bpt_base.h" />
     <ClInclude Include="bpt_internal.h" />
     <ClInclude Include="config.h" />
+    <ClInclude Include="db.h" />
+    <ClInclude Include="exceptions.h" />
     <ClInclude Include="features_impl.h" />
     <ClInclude Include="flags.h" />
     <ClInclude Include="leaf.h" />
@@ -168,9 +174,20 @@
     <ClInclude Include="hash.h" />
     <ClInclude Include="picosha2.h" />
     <ClInclude Include="record.h" />
+    <ClInclude Include="spdlog\async.h" />
+    <ClInclude Include="spdlog\async_logger.h" />
+    <ClInclude Include="spdlog\common.h" />
+    <ClInclude Include="spdlog\formatter.h" />
+    <ClInclude Include="spdlog\logger.h" />
+    <ClInclude Include="spdlog\spdlog.h" />
+    <ClInclude Include="spdlog\tweakme.h" />
+    <ClInclude Include="spdlog\version.h" />
+    <ClInclude Include="db_wrapper.h" />
+    <ClInclude Include="statedb.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="utils.h" />
+    <ClInclude Include="version.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">

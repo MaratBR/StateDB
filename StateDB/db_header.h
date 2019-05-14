@@ -4,8 +4,21 @@
 namespace statedb {
 #	define DB_MAGIC "StAtE1"
 #	define DB_VERSION 1
+#	define MINIMAL_HEADER_SIZE (sizeof(::statedb::db_header))
 
-	struct db_magic { const char value[7] = DB_MAGIC; };
+	struct db_magic 
+	{ 
+		const char value[7] = DB_MAGIC; 
+
+		bool verify()
+		{
+			for (int i = 0; i < 7; i++)
+				if (value[i] != DB_MAGIC[i])
+					return false;
+
+			return true;
+		}
+	};
 
 	struct db_pointers
 	{
@@ -38,8 +51,10 @@ namespace statedb {
 
 	struct db_header
 	{
-		const db_magic magic;
+		db_header(){}
 		static const size_t magic_offset = sizeof(db_magic);
+		bool save_db_hash;
+		size_t db_hash;
 		db_meta meta;
 
 		db_info info;
