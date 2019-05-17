@@ -1,7 +1,5 @@
 #pragma once
-#include "db_header.h"
 #include "db.h"
-#include "stdafx.h"
 
 namespace fs = std::filesystem;
 
@@ -41,7 +39,7 @@ namespace statedb {
 		void verify_file()
 		{
 			spdlog::debug("Verifying file...");
-			size_t size = fs::file_size(db_filepath);
+			uintmax_t size = fs::file_size(db_filepath);
 			spdlog::debug("File size = {}", size);
 
 			

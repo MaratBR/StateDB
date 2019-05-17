@@ -38,8 +38,17 @@ constexpr void print_depth(size_t depth)
 
 #define CONCAT_COMMA(...) __VA_ARGS__
 
-// Some useful (or not) types
+// Stringify macro
+#define STR(x) _STRSTR(x)
+#define _STRSTR(x) #x
 
+// Chck that pointer is not nullptr 
+#define _ENSUREDEL(x) do { if ((x) != nullptr) { delete(x); } } while(0)
+
+// Check non zero value
+#define assert_zero(x, msg) do { if ((x) != 0) { throw ::statedb::db_exception((msg)); } } while(0)
+
+// Some useful (or not) types
 using none_t = struct{};
 constexpr none_t none = none_t();
 using byte_t = unsigned char;

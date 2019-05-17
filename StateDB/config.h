@@ -6,6 +6,13 @@
 
 #define STATEDB_CHANGES_INCLUDE_VALUE false
 #define CHECK_UNIMPLEMENTED_CMD_CODES true
+#define IGNORE_MAJOR_VERSION_MISMATCH true 
+
+#define MAX_BLOCK_SIZE (1024*1024*256)
+#define SKIP_UNUSED_BYTES_MODE_SEEK 0
+#define SKIP_UNUSED_BYTES_MODE_FILL0 1
+#define SKIP_UNUSED_BYTES_MODE_FILL1 2
+#define SKIP_UNUSED_BYTES_MODE SKIP_UNUSED_BYTES_MODE_FILL1
 
 using command_t = uint16_t; // Don't change this
 
@@ -82,7 +89,7 @@ struct cmd_handlers_registry
 #		define CMD_RENAME_KEY MAKE_CMD( CMD_TYPE_DATA, 3 )
 		cmd_handler_ptr rename_key = nullptr;
 	
-#		define CMD_GET_VAL MAKE_CMD( CMD_TYPE_DATA, 4 )
+#		define CMD_FORCE_UPDATE_KEY MAKE_CMD( CMD_TYPE_DATA, 4 )
 		cmd_handler_ptr force_update_key = nullptr;
 	} _data;
 
@@ -116,12 +123,16 @@ constexpr size_t data_handlers_offset = offsetof(cmd_handlers_registry, _data);
 constexpr size_t behv_handlers_offset = offsetof(cmd_handlers_registry, _behv);
 constexpr size_t struct_handlers_offset = offsetof(cmd_handlers_registry, _struct);
 
-const size_t cmd_handlers_registry::offsets[5] = { meta_handlers_offset, data_handlers_offset, behv_handlers_offset, struct_handlers_offset, sizeof(cmd_handlers_registry) };
 
 #ifndef STATEDB_CHANGES_TRACING_MODE
 #	define STATEDB_CHANGES_TRACING_MODE STATEDB_CHANGES_TRACING_MODE_ALWAYS
 #endif
 
+#define DB_INT16_TYPE 1
+#define DB_BYTE_TYPE 2
+#define DB_INT32_TYPE 3
+#define DB_DYNAMIC 4
 
+#define USER_DTYPE_LOW 256
 
 

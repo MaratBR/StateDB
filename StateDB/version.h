@@ -1,6 +1,11 @@
 #pragma once
 #include "globals.h"
 
+#define STATEDB_MAJOR_VERSION 1
+#define STATEDB_MINOR_VERSION 0
+#define STATEDB_REVISION 0
+#define STATEDB_BUILD 0
+
 #define STATEDB_VERSION "1.0.0" _D("-debug")
 
 #define STATEDB_CREDITS \

@@ -1,5 +1,4 @@
 #pragma once
-#include "stdafx.h"
 
 namespace statedb {
 	template<size_t count>
