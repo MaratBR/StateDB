@@ -4,6 +4,11 @@
 
 namespace statedb {
 	namespace utils {
+		void insert_data_fstream(void* data, size_t size, std::fstream& fs, size_t oldSize = 0);
+		
+
+		void shift_stream(std::fstream& fs, int offset);
+
 		template<typename TDerived>
 		class stream_rw
 		{
@@ -27,7 +32,7 @@ namespace statedb {
 
 		template <
 			typename T,
-			std::enable_if_t<!std::is_base_of<stream_rw<T>, T>::value, int> = 0
+			std::enable_if_t<std::is_base_of<stream_rw<T>, T>::value, int> = 0
 		>
 		constexpr size_t get_object_size(T & obj)
 		{

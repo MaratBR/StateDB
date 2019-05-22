@@ -27,12 +27,12 @@ namespace statedb
 		{
 			return m_dtypes.size();
 		}
-	private:
-		std::map<dtype_id_t, dtype_decl> m_dtypes;
-
 
 		// Унаследовано через stream_rw
 		virtual void write_to(std::ostream& o) override;
 		virtual void read_from(std::istream& i) override;
+		virtual size_t get_size() const override;
+	private:
+		std::map<dtype_id_t, dtype_decl> m_dtypes;
 	};
 }

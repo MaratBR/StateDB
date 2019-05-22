@@ -2,29 +2,50 @@
 #include "utils.h"
 
 namespace statedb {
-	struct db_string : public utils::stream_rw<db_string>
+	template<size_t SIZE>
+	struct char_arr
 	{
-		char* c_str = nullptr;
-
-		db_string(nullptr_t){}
-		db_string(char* str) : c_str(str) {}
-		
-		~db_string();
-		void dispose();
-
-		bool operator==(nullptr_t) { return c_str == nullptr; }
-		bool operator!=(nullptr_t) { return c_str != nullptr; }
-
-		// Унаследовано через stream_rw
-		virtual void write_to(std::ostream& o) override;
-		virtual void read_from(std::istream& i) override;
-		virtual size_t get_size() const override;
-
-
-		template<typename OStream>
-		friend OStream& operator<<(OStream& os, const db_string& c)
+		char_arr(const char* str)
+			: char_arr(str, strlen(str))
 		{
-			return os << c.c_str;
 		}
+
+		char_arr(const char* str, size_t sourceLen)
+			: char_arr()
+		{
+			copy_from(str, sourceLen);
+		}
+
+		char_arr<SIZE>& operator=(const char* str)
+		{
+			copy_from(str);
+			return *this;
+		}
+
+		char_arr(nullptr_t) : char_arr() {}
+
+		char_arr()
+		{
+			memset(data, 0, SIZE);
+		}
+
+		void copy_from(const char* str)
+		{
+			copy_from(str, strlen(str));
+		}
+
+		void copy_from(const char* str, size_t sourceLen)
+		{
+			assert_zero(
+				memcpy_s(data, SIZE, str, sourceLen),
+				"Failed to copy data from raw string to inner container"
+			);
+		}
+
+		static const size_t size = SIZE;
+		char data[SIZE];
+
+		template<typename TStream>
+		friend TStream& operator<<(TStream& s, const char_arr<SIZE>& arr) { return s << (static_cast<const char*>(arr.data)); }
 	};
 }

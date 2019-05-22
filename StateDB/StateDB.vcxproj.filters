@@ -22,6 +22,9 @@
     <Filter Include="Файлы заголовков\spdlog">
       <UniqueIdentifier>{205afbe9-3cf6-45a1-9bbe-b807bc9a6e8e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Файлы заголовков\net">
+      <UniqueIdentifier>{a4e18bfa-202a-44ed-b006-71f087734537}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -135,6 +138,21 @@
     <ClInclude Include="segment_container.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
+    <ClInclude Include="compile_time.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="server.h">
+      <Filter>Файлы заголовков\net</Filter>
+    </ClInclude>
+    <ClInclude Include="client_controller.h">
+      <Filter>Файлы заголовков\net</Filter>
+    </ClInclude>
+    <ClInclude Include="net_message.h">
+      <Filter>Файлы заголовков\net</Filter>
+    </ClInclude>
+    <ClInclude Include="abstract_stream.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -161,6 +179,15 @@
     <ClCompile Include="db.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
+    <ClCompile Include="server.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="net_message.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="abstract_stream.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="StateDB.rc">
@@ -171,5 +198,10 @@
     <Text Include="spdlog\LICENSE.txt">
       <Filter>Файлы заголовков\spdlog</Filter>
     </Text>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\DBTestTerminal\storage-D.statedb">
+      <Filter>Файлы ресурсов</Filter>
+    </None>
   </ItemGroup>
 </Project>

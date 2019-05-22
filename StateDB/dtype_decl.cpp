@@ -9,7 +9,7 @@ void statedb::dtype_decl::write_to(std::ostream& o)
 
 	if (!is_dynamic)
 	{
-		size_t length = fields.size();
+		auto length = fields.size();
 		utils::write_object(length, o);
 		for (field_t& col : fields)
 		{
@@ -43,4 +43,9 @@ void statedb::dtype_decl::read_from(std::istream& i)
 		// Read max_length
 		utils::read_object(&max_length, i);
 	}
+}
+
+size_t statedb::dtype_decl::get_size() const
+{
+	return sizeof(id) + sizeof(_flags) + sizeof(char) * (strlen(human_name) + 1) + (is_dynamic ? sizeof(max_length) : (sizeof(fields.size()) + fields.size() * sizeof(fields[0])));
 }

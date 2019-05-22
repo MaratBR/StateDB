@@ -1,5 +1,7 @@
 ﻿#include "pch.h"
 #include <StateDB/db_wrapper.h>
+#include <iostream>
+#include <chrono>
 
 using namespace std;
 
@@ -55,5 +57,23 @@ enum options_index
 int main()
 {
 	show_header();
+	
+
+
+	return 0;
 	init_db();
+
+	time_t rawtime;
+	tm timeinfo;
+	char* buffer = new char[strlen(DEFAULT_DB_FILE) + 80];
+	memcpy_s(buffer, strlen(DEFAULT_DB_FILE), DEFAULT_DB_FILE, strlen(DEFAULT_DB_FILE));
+
+	time(&rawtime);
+	localtime_s(&timeinfo, &rawtime);
+	strftime(buffer + strlen(DEFAULT_DB_FILE), 80, "%d-%m-%YT%H-%M-%S", &timeinfo);
+
+	delete db;
+
+	fs::copy_file(DEFAULT_DB_FILE, buffer);
+	fs::remove(fs::current_path() / DEFAULT_DB_FILE);
 }

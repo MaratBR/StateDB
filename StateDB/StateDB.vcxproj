@@ -155,11 +155,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="abstract_stream.h" />
     <ClInclude Include="basic_types.h" />
     <ClInclude Include="bplus_tree.h" />
     <ClInclude Include="bpt.h" />
     <ClInclude Include="bpt_base.h" />
     <ClInclude Include="bpt_internal.h" />
+    <ClInclude Include="client_controller.h" />
+    <ClInclude Include="compile_time.h" />
     <ClInclude Include="config.h" />
     <ClInclude Include="db.h" />
     <ClInclude Include="dtypes_collection.h" />
@@ -174,10 +177,12 @@
     <ClInclude Include="globals.h" />
     <ClInclude Include="hash.h" />
     <ClInclude Include="log_utils.h" />
+    <ClInclude Include="net_message.h" />
     <ClInclude Include="picosha2.h" />
     <ClInclude Include="record.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="segment_container.h" />
+    <ClInclude Include="server.h" />
     <ClInclude Include="spdlog\async.h" />
     <ClInclude Include="spdlog\async_logger.h" />
     <ClInclude Include="spdlog\common.h" />
@@ -194,12 +199,15 @@
     <ClInclude Include="version.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="abstract_stream.cpp" />
     <ClCompile Include="basic_types.cpp" />
     <ClCompile Include="config.cpp" />
     <ClCompile Include="db.cpp" />
     <ClCompile Include="db_header.cpp" />
     <ClCompile Include="dtypes_collection.cpp" />
     <ClCompile Include="dtype_decl.cpp" />
+    <ClCompile Include="net_message.cpp" />
+    <ClCompile Include="server.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
@@ -213,6 +221,9 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="spdlog\LICENSE.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\DBTestTerminal\storage-D.statedb" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

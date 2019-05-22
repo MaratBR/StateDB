@@ -32,3 +32,13 @@ void statedb::dtypes_collection::read_from(std::istream& i)
 		add(dtype);
 	}
 }
+
+size_t statedb::dtypes_collection::get_size() const
+{
+	size_t itemsSize = 0;
+
+	for (auto& dtype : m_dtypes)
+		itemsSize += dtype.second.get_size();
+
+	return sizeof(size_t) + itemsSize;
+}

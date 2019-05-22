@@ -1,4 +1,5 @@
 #pragma once
+#include "compile_time.h"
 
 // Debug stuff
 
@@ -9,6 +10,12 @@
 #	else
 #		define DEBUG _FALLBACK_DEBUG
 #	endif
+#endif
+
+#ifdef DEBUG
+#	define DEBUG_BOOL true
+#else
+#	define DEBUG_BOOL false
 #endif
 
 
@@ -40,7 +47,9 @@ constexpr void print_depth(size_t depth)
 
 // Stringify macro
 #define STR(x) _STRSTR(x)
-#define _STRSTR(x) #x
+#define _STRSTR(x) _STRSTR2(x)
+#define _STRSTR2(x) _STRSTR3(x)
+#define _STRSTR3(x) #x
 
 // Chck that pointer is not nullptr 
 #define _ENSUREDEL(x) do { if ((x) != nullptr) { delete(x); } } while(0)
@@ -51,18 +60,4 @@ constexpr void print_depth(size_t depth)
 // Some useful (or not) types
 using none_t = struct{};
 constexpr none_t none = none_t();
-using byte_t = unsigned char;
-
-
-// https://stackoverflow.com/questions/87372/check-if-a-class-has-a-member-function-of-a-given-signature
-// This is not required anymore, but I'll keep that just yet 
-//#define STATIC_SIGNATURE_CHECKER(name, return_type, ...)							\
-//template<typename T>																\
-//class has_sig_ ## name																\
-//{																					\
-//	template<typename U, return_type(U::*)(__VA_ARGS__) const> struct SFINAE {};	\
-//	template<typename U> static char _test(SFINAE<U, &U::name>*);					\
-//	template<typename U> static int _test(...);										\
-//public:																				\
-//	static const bool value = sizeof(_test<T>(0)) == sizeof(char);					\
-//};
+using byte_t = char;

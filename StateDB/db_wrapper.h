@@ -9,7 +9,7 @@ namespace statedb {
 	class db_wrapper
 	{
 	public:
-		db_wrapper(const fs::path workingDirectory, const std::string dbFilename = "storage.statedb")
+		db_wrapper(const fs::path workingDirectory, const std::string dbFilename = DEFAULT_DB_FILE)
 			: db_filepath(workingDirectory / dbFilename),
 			db_filename(dbFilename)
 		{
@@ -22,18 +22,36 @@ namespace statedb {
 			spdlog::debug("New instance of db object has been initialized workingDirectory={} file={} ptr={:x}", workingDirectory.string(), dbFilename, (size_t)this);
 		}
 
+		~db_wrapper()
+		{
+			dispose();
+		}
+
+		void dispose()
+		{
+			_ENSUREDEL(_db);
+			if (fstream)
+			{
+				fstream->clear();
+				fstream->close();
+				delete fstream;
+			}
+		}
+
 		void load_data()
 		{
+			dispose();
 			fstream = open_file();
-
-			if (!fstream->good())
-			{
-				spdlog::error(ERR_DESCRIPTION_CANT_OPEN_DB_FILE);
-				throw statedb::db_exception(ERR_DESCRIPTION_CANT_OPEN_DB_FILE);
-			}
 
 			spdlog::debug("Database file is open now");
 			verify_file();
+		}
+
+		void resize_file(size_t newSize)
+		{
+			close_file();
+			fs::resize_file(db_filepath, newSize);
+			fstream->open(db_filepath);
 		}
 	private:
 		void verify_file()
@@ -60,12 +78,21 @@ namespace statedb {
 		void clear_file()
 		{
 			// Close. Clear. Reopen.
-			fstream->close();
+			close_file();
 			delete fstream;
 			fstream = new std::fstream(db_filepath, std::ios::in | std::ios::trunc);
 			fstream->close();
 			delete fstream;
 			fstream = open_file();
+		}
+
+		void close_file()
+		{
+			if (fstream && fstream->is_open())
+			{
+				fstream->clear();
+				fstream->close();
+			}
 		}
 
 		std::fstream* open_file()
@@ -79,12 +106,20 @@ namespace statedb {
 			{
 				mode |= std::ios::trunc;
 			}
-			return new std::fstream(db_filepath, mode);
+			auto* fs_ = new std::fstream(db_filepath, mode);
+
+			if (!fs_->good())
+			{
+				spdlog::error(ERR_DESCRIPTION_CANT_OPEN_DB_FILE);
+				throw statedb::db_exception(ERR_DESCRIPTION_CANT_OPEN_DB_FILE);
+			}
+
+			return fs_;
 		}
 
 		const fs::path db_filepath;
 		const std::string db_filename;
-		std::fstream* fstream;
-		db* _db;
+		std::fstream* fstream = nullptr;
+		db* _db = nullptr;
 	};
 }

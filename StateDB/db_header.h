@@ -38,23 +38,17 @@ namespace statedb {
 	struct db_info : public utils::stream_rw<db_info>
 	{
 		~db_info() { dispose(); }
-		db_string name = nullptr;
-		db_string description = nullptr;
+		char_arr<32> name = nullptr;
+		char_arr<256> description = nullptr;
 
 		void dispose()
 		{
-			description.dispose();
-			name.dispose();
 		}
 
 		void set_defaults()
 		{
-			dispose();
-
-			description.c_str = new char[strlen(DEFAULT_DB_DESCRIPTION) + 1];
-			name.c_str = new char[strlen(DEFAULT_DB_NAME) + 1];
-			assert_zero(strcpy_s(name.c_str, strlen(DEFAULT_DB_NAME) + 1, DEFAULT_DB_NAME), "Failed to copy default DB name");
-			assert_zero(strcpy_s(description.c_str, strlen(DEFAULT_DB_DESCRIPTION) + 1, DEFAULT_DB_DESCRIPTION), "Failed to copy default DB description");
+			description = DEFAULT_DB_DESCRIPTION;
+			name = DEFAULT_DB_NAME;
 		}
 
 		// Унаследовано через stream_rw
@@ -69,6 +63,7 @@ namespace statedb {
 		db_header(){}
 		static const size_t magic_offset = sizeof(db_magic);
 		bool save_db_hash = _SAVE_DB_HASH_DEFAULT;
+		bool debug_mode = DEBUG_BOOL;
 		size_t db_hash = 0;
 		db_meta meta;
 

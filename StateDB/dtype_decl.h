@@ -20,5 +20,6 @@ namespace statedb {
 		// Унаследовано через stream_rw
 		virtual void write_to(std::ostream& o) override;
 		virtual void read_from(std::istream& i) override;
+		virtual size_t get_size() const override;
 	};
 }

@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "db.h"
+#include "segment_container.h"
 
 void statedb::db_inner::debug_print()
 
@@ -13,13 +14,15 @@ void statedb::db_inner::debug_print()
 void statedb::db_inner::write_to(std::ostream& o)
 {
 	utils::write_object(header, o);
-	utils::write_object(dtypes, o);
+	INIT_CONTAINER(container, dtypes);
+	utils::write_object(container, o);
 }
 
 void statedb::db_inner::read_from(std::istream& i)
 {
 	utils::read_object(&header, i);
-	utils::read_object(&dtypes, i);
+	INIT_CONTAINER(container, dtypes);
+	utils::read_object(&container, i);
 }
 
 size_t statedb::db_inner::get_size() const
