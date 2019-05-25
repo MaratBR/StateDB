@@ -9,6 +9,9 @@
 #include <fstream>
 #include <map>
 
+#include <boost/function.hpp>
+#include <boost/bind.hpp>
+
 #include "spdlog/spdlog.h"
 #include "spdlog/fmt/fmt.h"
 #include "spdlog/fmt/bin_to_hex.h"

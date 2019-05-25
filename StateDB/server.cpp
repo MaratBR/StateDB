@@ -28,7 +28,8 @@ void statedb::net::db_server::listen()
 			throw db_exception("Server: ::accept() failed");
 		}
 
-		spdlog::debug("Accepted new connection from {} on port {}", inet_ntoa(client_addr.sin_addr), htons(client_addr.sin_port));
+		char* strBuf = new char[16];
+		spdlog::debug("Accepted new connection from {} on port {}", inet_ntop(AF_INET, &client_addr.sin_addr.s_addr, strBuf, 16), htons(client_addr.sin_port));
 		
 #endif
 	}
@@ -47,7 +48,25 @@ void statedb::net::db_server::_init()
 	spdlog::debug("Creating SOCKADDR_IN structure...");
 
 	listen_addr.sin_family = AF_INET;
-	listen_addr.sin_addr.s_addr = (host == nullptr) ? INADDR_ANY : inet_addr(host);
+
+	ULONG addr;
+	INT result;
+
+	if (host == nullptr)
+		addr = INADDR_ANY;
+	else if ((result = inet_pton(AF_INET, host, &addr)) != 1)
+	{
+		if (result == -1)
+		{
+			throw db_exception("Server: invalid IP address");
+		}
+		else
+		{
+			throw db_exception("Server: WSA error occur");
+		}
+	}
+	 
+	listen_addr.sin_addr.s_addr = (host == nullptr) ? INADDR_ANY : addr;
 	listen_addr.sin_port = htons(port);
 
 	// Init socket

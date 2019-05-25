@@ -3,6 +3,8 @@
 #include <iostream>
 #include <chrono>
 
+#include <StateDB/asio_server.h>
+
 using namespace std;
 
 #define _TRY try {
@@ -56,11 +58,14 @@ enum options_index
 
 int main()
 {
-	show_header();
-	
+	spdlog::set_level(spdlog::level::debug);
+
+
+	statedb::net::asio_server server(asio::ip::tcp::endpoint(asio::ip::address_v4::loopback(), 3456));
 
 
 	return 0;
+	show_header();
 	init_db();
 
 	time_t rawtime;

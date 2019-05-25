@@ -7,6 +7,7 @@
 
 namespace statedb {
 	using db_key_type = size_t;
+	using namespace utils;
 
 	const char* const ERR_DESCRIPTION_INVALID_MAGIC = "Invalid magic value";
 
@@ -28,8 +29,8 @@ namespace statedb {
 
 		void debug_print();
 
-		virtual void write_to(std::ostream& o) override;
-		virtual void read_from(std::istream& i) override;
+		virtual void write_to(abstract_ostream& o) override;
+		virtual void read_from(abstract_istream& i) override;
 		virtual size_t get_size() const override;
 	};
 

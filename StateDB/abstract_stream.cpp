@@ -1,22 +1,58 @@
 #include "stdafx.h"
 #include "abstract_stream.h"
 
-statedb::utils::istream_wrp::istream_wrp(std::istream& is)
+using namespace statedb::utils;
+
+istream_wrp::istream_wrp(std::istream& is)
 	: is(is)
 {
 }
 
-void statedb::utils::istream_wrp::read(byte_t* dest, size_t count)
+void istream_wrp::read(byte_t* dest, size_t count)
 {
 	is.read(dest, count);
 }
 
-statedb::utils::ostream_wrp::ostream_wrp(std::ostream& os)
+std::streampos istream_wrp::tellg()
+{
+	return is.tellg();
+}
+
+abstract_istream& statedb::utils::istream_wrp::seekg(std::streampos pos)
+{
+	is.seekg(pos);
+	return *this;
+}
+
+abstract_istream& statedb::utils::istream_wrp::seekg(std::streamoff off, std::ios_base::seekdir way)
+{
+	is.seekg(off, way);
+	return *this;
+}
+
+ostream_wrp::ostream_wrp(std::ostream& os)
 	: os(os)
 {
 }
 
-void statedb::utils::ostream_wrp::write(byte_t* src, size_t srcLen)
+void ostream_wrp::write(byte_t* src, size_t srcLen)
 {
 	os.write(src, srcLen);
+}
+
+std::streampos ostream_wrp::tellp()
+{
+	return os.tellp();
+}
+
+abstract_ostream& ostream_wrp::seekp(std::streampos pos)
+{
+	os.seekp(pos);
+	return *this;
+}
+
+abstract_ostream& ostream_wrp::seekp(std::streamoff off, std::ios_base::seekdir way)
+{
+	os.seekp(off, way);
+	return *this;
 }

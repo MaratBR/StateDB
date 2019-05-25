@@ -8,6 +8,8 @@ namespace statedb {
 #	define MINIMAL_HEADER_SIZE (sizeof(::statedb::db_header))
 #	define _SAVE_DB_HASH_DEFAULT false
 
+	using namespace utils;
+
 	struct db_magic 
 	{ 
 		const char value[7] = DB_MAGIC; 
@@ -52,8 +54,8 @@ namespace statedb {
 		}
 
 		// Унаследовано через stream_rw
-		virtual void write_to(std::ostream& o) override;
-		virtual void read_from(std::istream& i) override;
+		virtual void write_to(abstract_ostream& o) override;
+		virtual void read_from(abstract_istream& i) override;
 		virtual size_t get_size() const override;
 	};
 
@@ -79,8 +81,8 @@ namespace statedb {
 		}
 
 		// Унаследовано через stream_rw
-		virtual void write_to(std::ostream& o) override;
-		virtual void read_from(std::istream& i) override;
+		virtual void write_to(abstract_ostream& o) override;
+		virtual void read_from(abstract_istream& i) override;
 		virtual size_t get_size() const override;
 	};
 }

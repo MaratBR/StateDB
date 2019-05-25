@@ -3,6 +3,7 @@
 #include "utils.h"
 
 namespace statedb {
+	using namespace utils;
 
 	struct segmenent_preamble
 	{
@@ -24,7 +25,7 @@ namespace statedb {
 
 		segment_container(T& val) : m_val(val) {}
 
-		void write_to(std::ostream& o) override
+		void write_to(abstract_ostream& o) override
 		{
 			adjust_blocks_count();
 			utils::write_object(preamble, o);
@@ -35,11 +36,11 @@ namespace statedb {
 			skip_bytes_o(startPos + (std::streampos)(preamble.blocks_count * preamble.block_size) - endPos, o);
 		}
 
-		void read_from(std::istream& i) override
+		void read_from(abstract_istream& i) override
 		{
-			utils::read_object(&preamble, i);
+			read_object(&preamble, i);
 			auto startPos = i.tellg();
-			utils::read_object(&m_val, i);
+			read_object(&m_val, i);
 			auto endPos = i.tellg();
 			auto size = endPos - startPos;
 			blocks_count = size / preamble.block_size + (size % preamble.block_size == 0 ? 0u : 1u);
@@ -59,9 +60,9 @@ namespace statedb {
 			preamble.blocks_count = size / preamble.block_size + (size % preamble.block_size == 0 ? 0u : 1u);
 		}
 
-		void skip_bytes_i(std::streampos count, std::istream& i) { i.seekg(count); }
+		void skip_bytes_i(std::streampos count, abstract_istream& i) { assert(i.get_seek_modeg() != seek_mode_e::non_seekable); i.seekg(count); }
 
-		void skip_bytes_o(std::streampos count, std::ostream& o)
+		void skip_bytes_o(std::streampos count, abstract_ostream& o)
 		{
 			void* data = malloc(count);
 			memset(data, EMPTY_SPACE_BYTE, count);

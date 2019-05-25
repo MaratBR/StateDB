@@ -6,7 +6,9 @@
 
 namespace statedb
 {
-	class dtypes_collection : public utils::stream_rw<dtypes_collection>
+	using namespace utils;
+
+	class dtypes_collection : public stream_rw<dtypes_collection>
 	{
 	public:
 		void add(dtype_decl decl);
@@ -29,8 +31,8 @@ namespace statedb
 		}
 
 		// Унаследовано через stream_rw
-		virtual void write_to(std::ostream& o) override;
-		virtual void read_from(std::istream& i) override;
+		virtual void write_to(abstract_ostream& o) override;
+		virtual void read_from(abstract_istream& i) override;
 		virtual size_t get_size() const override;
 	private:
 		std::map<dtype_id_t, dtype_decl> m_dtypes;

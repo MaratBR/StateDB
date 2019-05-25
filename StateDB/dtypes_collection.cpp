@@ -1,7 +1,10 @@
 #include "stdafx.h"
 #include "dtypes_collection.h"
 
-void statedb::dtypes_collection::add(dtype_decl decl)
+using namespace statedb;
+using namespace statedb::utils;
+
+void dtypes_collection::add(dtype_decl decl)
 {
 	if (decl.id < USER_DTYPE_LOW)
 	{
@@ -10,30 +13,30 @@ void statedb::dtypes_collection::add(dtype_decl decl)
 	m_dtypes[decl.id] = decl;
 }
 
-void statedb::dtypes_collection::write_to(std::ostream& o)
+void dtypes_collection::write_to(abstract_ostream& o)
 {
 	size_t size = m_dtypes.size();
-	utils::write_object(size, o);
+	write_object(size, o);
 
 	for (auto& dtype : m_dtypes)
 		write_object(dtype, o);
 }
 
-void statedb::dtypes_collection::read_from(std::istream& i)
+void dtypes_collection::read_from(abstract_istream& i)
 {
 	m_dtypes.clear();
 
 	size_t ii = 0;
-	utils::read_object(&ii, i);
+	read_object(&ii, i);
 	dtype_decl dtype;
 	while (ii-- > 0)
 	{
-		utils::read_object(&dtype, i);
+		read_object(&dtype, i);
 		add(dtype);
 	}
 }
 
-size_t statedb::dtypes_collection::get_size() const
+size_t dtypes_collection::get_size() const
 {
 	size_t itemsSize = 0;
 

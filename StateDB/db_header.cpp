@@ -1,13 +1,16 @@
 #include "stdafx.h"
 #include "db_header.h"
 
-void statedb::db_info::write_to(std::ostream& o)
+using namespace statedb;
+using namespace statedb::utils;
+
+void db_info::write_to(abstract_ostream& o)
 {
 	utils::write_object(name, o);
 	utils::write_object(description, o);
 }
 
-void statedb::db_info::read_from(std::istream& i)
+void db_info::read_from(abstract_istream& i)
 {
 	utils::read_object(&name, i);
 	utils::read_object(&description, i);
@@ -18,7 +21,7 @@ size_t statedb::db_info::get_size() const
 	return utils::get_object_size(name) + utils::get_object_size(description);
 }
 
-void statedb::db_header::write_to(std::ostream& o)
+void db_header::write_to(abstract_ostream& o)
 {
 	utils::write_object(save_db_hash, o);
 	utils::write_object(debug_mode, o);
@@ -27,7 +30,7 @@ void statedb::db_header::write_to(std::ostream& o)
 	utils::write_object(info, o);
 }
 
-void statedb::db_header::read_from(std::istream& i)
+void db_header::read_from(abstract_istream& i)
 {
 	utils::read_object(&save_db_hash, i);
 	utils::read_object(&debug_mode, i);
@@ -36,7 +39,7 @@ void statedb::db_header::read_from(std::istream& i)
 	utils::read_object(&info, i);
 }
 
-size_t statedb::db_header::get_size() const
+size_t db_header::get_size() const
 {
 	return sizeof(save_db_hash) + sizeof(db_hash) + sizeof(meta) + info.get_size();
 }
