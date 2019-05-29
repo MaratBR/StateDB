@@ -15,18 +15,18 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="pch.h">
+    <ClInclude Include="optionparser.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="optionparser.h">
+    <ClInclude Include="pch_terminal.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="pch.cpp">
+    <ClCompile Include="DBTestTerminal.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="DBTestTerminal.cpp">
+    <ClCompile Include="pch_terminal.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
   </ItemGroup>

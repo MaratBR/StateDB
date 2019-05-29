@@ -1,9 +1,6 @@
-﻿#include "pch.h"
-#include <StateDB/db_wrapper.h>
-#include <iostream>
-#include <chrono>
-
-#include <StateDB/asio_server.h>
+﻿#include "pch_terminal.h"
+#include <asio_server.h>
+#include <locale>
 
 using namespace std;
 
@@ -13,10 +10,6 @@ catch(::statedb::db_exception exc) { \
 	spdlog::critical(exc.what()); \
 	exit(1); \
 }
-
-struct {
-	fs::path working_dir;
-} settings;
 
 void show_header()
 {
@@ -34,51 +27,44 @@ void show_header()
 		<< endl;
 }
 
-statedb::db_wrapper* db;
 
-void init_db()
+
+class Server
 {
-	spdlog::set_level(spdlog::level::debug);
-	settings.working_dir = fs::current_path();
-	db = new statedb::db_wrapper(settings.working_dir);
+public:
+	Server()
+	{
+		boost::asio::deadline_timer dt(io, boost::posix_time::seconds(10));
+		dt.async_wait([](const boost::system::error_code&) { std::cout << "HI"; });
+		io.run();
+	}
 
-	_TRY
-		db->load_data();
-	_CRITICAL_CATCH
-}
-
-enum options_index
-{
-	UNKNOWN,
-	PORT,
-	HOST,
-	THREADS_COUNT,
-	LOGGING_LEVEL
+private:
+	boost::asio::io_context io;
 };
 
 int main()
 {
+	setlocale(LC_ALL, "Russian");
 	spdlog::set_level(spdlog::level::debug);
-
-
-	statedb::net::asio_server server(asio::ip::tcp::endpoint(asio::ip::address_v4::loopback(), 3456));
-
-
-	return 0;
 	show_header();
-	init_db();
 
-	time_t rawtime;
-	tm timeinfo;
-	char* buffer = new char[strlen(DEFAULT_DB_FILE) + 80];
-	memcpy_s(buffer, strlen(DEFAULT_DB_FILE), DEFAULT_DB_FILE, strlen(DEFAULT_DB_FILE));
+	statedb::net::asio_server server(boost::asio::ip::tcp::endpoint(
+		boost::asio::ip::address_v4::loopback(), 3456));
 
-	time(&rawtime);
-	localtime_s(&timeinfo, &rawtime);
-	strftime(buffer + strlen(DEFAULT_DB_FILE), 80, "%d-%m-%YT%H-%M-%S", &timeinfo);
+	server.start_listening();
+	server.run();
+	//time_t rawtime;
+	//tm timeinfo;
+	//char* buffer = new char[strlen(STATEDB_DEFAULT_DB_FILE) + 80];
+	//memcpy_s(buffer, strlen(STATEDB_DEFAULT_DB_FILE), STATEDB_DEFAULT_DB_FILE, strlen(STATEDB_DEFAULT_DB_FILE));
 
-	delete db;
+	//time(&rawtime);
+	//localtime_s(&timeinfo, &rawtime);
+	//strftime(buffer + strlen(STATEDB_DEFAULT_DB_FILE), 80, "%d-%m-%YT%H-%M-%S", &timeinfo);
 
-	fs::copy_file(DEFAULT_DB_FILE, buffer);
-	fs::remove(fs::current_path() / DEFAULT_DB_FILE);
+	//delete db;
+
+	//fs::copy_file(STATEDB_DEFAULT_DB_FILE, buffer);
+	//fs::remove(fs::current_path() / STATEDB_DEFAULT_DB_FILE);
 }
