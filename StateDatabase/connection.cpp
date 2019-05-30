@@ -12,76 +12,109 @@ ASIO_SOCKET& tcp_connection::socket()
 void tcp_connection::start()
 {
 	logger->debug("Waiting for HELLO from {}:{} ...", socket_.remote_endpoint().address().to_string(), socket_.remote_endpoint().port());
-	auto buf = dynamic_storage_.allocate_asio_buffer<hello_message_static>();
-
-	return;
-
-	_STATEDB_UTILS read_with_timeout(
-		socket_,
-		buf,
-		HELLO_TIMEOUT,
+	async_read_message<hello_message_static>(
 		boost::bind(&tcp_connection::received_hello, this, boost::asio::placeholders::error, boost::asio::placeholders::bytes_transferred),
-		boost::bind(&tcp_connection::timer_expired, this, boost::asio::placeholders::error),
-		boost::ref(*deadline_timer_)
+		TIMEOUT
 	);
 }
 
 void tcp_connection::close()
 {
-	
+	logger->info("Connection closed");
+	socket_.close();
 }
 
 void tcp_connection::init()
 {
-	deadline_timer_ = std::unique_ptr<boost::asio::deadline_timer>(new boost::asio::deadline_timer(*io_context_, boost::posix_time::seconds(4)));
 	address_string = boost::str(
 		boost::format("%s:%d") % socket_.remote_endpoint().address().to_string()
 		% socket_.remote_endpoint().port());
 	logger = logging::get_connection_logger(address_string);
 }
 
+std::string tcp_connection::get_id() const
+{
+	return address_string;
+}
+
 void tcp_connection::received_hello(const BOOST_ERR_CODE& ec, size_t br)
 {
-	logger->info("Received HELLO from {},", address_string);
+	hello_message_static& hello = dynamic_storage_.get<hello_message_static>();
+	if (!hello.valid(STATEDB_PROTOCOL_VERSION))
+	{
+		logger->warn("Invalid HELLO message: '{}' '{}' '{}' '{}' '{}', protocol byte: {}", 
+			hello._HELLO[0], hello._HELLO[1], hello._HELLO[2], hello._HELLO[3], hello._HELLO[4], hello._HELLO[5],
+			static_cast<int>(hello.protocol_version));
+		close();
+		dynamic_storage_.deallocate();
+		return;
+	}
+	logger->info("Received HELLO from {}", address_string);
+	dynamic_storage_.deallocate();
+
+	
 }
 
-void tcp_connection::timer_expired(const BOOST_ERR_CODE& ec)
+void tcp_connection::handle_timeout_expiration(const BOOST_ERR_CODE& ec)
 {
-	logger->info("Timeout for {} expired with error code: {}, action: {}", address_string, ec.message(), timed_out_action);
-}
-
-void tcp_connection::timer_expired_fatal(const BOOST_ERR_CODE& ec)
-{
-	timer_expired(ec);
+	logger->info("Timeout expired with error code: {} ({}), action: {}", address_string, ec.value(), ec.message(), timed_out_action);
 	close();
 }
 
-tcp_connection::tcp_connection(std::shared_ptr<boost::asio::io_context> io_context_)
-	: socket_(*io_context_),
-	io_context_(io_context_)
+void tcp_connection::handle_data(const BOOST_ERR_CODE& ec, size_t bt, bool required, boost::function<void(const BOOST_ERR_CODE&, size_t)> next)
 {
+	logger->debug(
+		"Received {} bytes, current dynamic storage: {}, success: {}, errno: {}, errmsg: {}", 
+		bt, 
+		dynamic_storage_.get_type(),
+		!ec.failed(),
+		ec.value(),
+		ec.message()
+		);
+	// If operation failed but required
+	if (required && ec.failed())
+	{
+		logger->error("Read oparation failed: {} {}", ec.value(), ec.message());
+		close();
+		return;
+	}
+
+	// Cancels timer
+	deadline_timer_.cancel();
+	// Call next handler
+	next(ec, bt);
 }
 
-void tcp_connection::_async_read_message_or_close__read(boost::function<void(const BOOST_ERR_CODE&, size_t)> h, const BOOST_ERR_CODE& ec, size_t bt)
+void tcp_connection::start_read_message()
 {
-	if (ec.failed())
-	{
-		logger->warn("{} - Reading operation failed: {}", address_string, ec.message());
-		timeout_close();
-	}
-	else
-	{
-		h(boost::ref(ec), bt);
-	}
+	async_read_message<message_preamble>(
+		boost::bind(&tcp_connection::handle_message, this, boost::asio::placeholders::error, boost::asio::placeholders::bytes_transferred)
+		);
 }
 
-void tcp_connection::_async_read_message_or_close__timeout(const BOOST_ERR_CODE& ec)
+void tcp_connection::handle_message(const BOOST_ERR_CODE& ec, size_t bt)
 {
-	if (ec.failed())
+	if (assert_no_error(ec)) return;
+
+	message_preamble& msg = dynamic_storage_.get<message_preamble>();
+	// Working with message
+
+	if (!msg.valid())
 	{
-		logger->warn("{} - Timeout failed with error {}", ec.message());
+
+		dynamic_storage_.deallocate();
+		return;
 	}
-	timeout_close();
+
+	// Deallocate message
+	dynamic_storage_.deallocate();
+}
+
+tcp_connection::tcp_connection(boost::asio::io_context& io_context_)
+	: socket_(io_context_),
+	io_context_(io_context_),
+	deadline_timer_(io_context_)
+{
 }
 
 _END_STATEDB_NET

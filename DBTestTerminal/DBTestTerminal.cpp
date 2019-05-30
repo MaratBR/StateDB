@@ -27,22 +27,6 @@ void show_header()
 		<< endl;
 }
 
-
-
-class Server
-{
-public:
-	Server()
-	{
-		boost::asio::deadline_timer dt(io, boost::posix_time::seconds(10));
-		dt.async_wait([](const boost::system::error_code&) { std::cout << "HI"; });
-		io.run();
-	}
-
-private:
-	boost::asio::io_context io;
-};
-
 int main()
 {
 	setlocale(LC_ALL, "Russian");

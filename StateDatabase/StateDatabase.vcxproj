@@ -186,6 +186,7 @@
     <ClInclude Include="dynamic_storage.h" />
     <ClInclude Include="exceptions.h" />
     <ClInclude Include="flags.h" />
+    <ClInclude Include="format_utils.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="globals.h" />
     <ClInclude Include="hash.h" />
@@ -214,8 +215,10 @@
     <ClCompile Include="db_header.cpp" />
     <ClCompile Include="dtypes_collection.cpp" />
     <ClCompile Include="dtype_decl.cpp" />
+    <ClCompile Include="format_utils.cpp" />
     <ClCompile Include="messages_dispatcher.cpp" />
     <ClCompile Include="net_message.cpp" />
+    <ClCompile Include="net_utils.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
@@ -223,6 +226,9 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="utils.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="cpp.hint" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

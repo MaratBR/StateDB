@@ -18,7 +18,9 @@ public:
 	{
 		if (fs::create_directories(workingDirectory))
 		{
-			spdlog::debug("Directory {} was created", workingDirectory.string());
+			
+			
+			("Directory {} was created", workingDirectory.string());
 		}
 
 		auto* ptr = this;

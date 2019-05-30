@@ -11,9 +11,26 @@ _BEGIN_STATEDB_NET
 class tcp_connection
 {
 public:
+	struct pending_read_operation_base
+	{
+		virtual void perform(tcp_connection& ds) = 0;
+		boost::function<void(const BOOST_ERR_CODE&, size_t)> handler;
+	};
+	
+	template<typename T>
+	struct pending_read_operation
+	{
+		virtual void perform(tcp_connection& ds) override
+		{
+			ds.async_read_message<T>(
+				
+				);
+		}
+	};
+
 	using pointer = std::shared_ptr<tcp_connection>;
 
-	static tcp_connection::pointer create(std::shared_ptr<boost::asio::io_context> io_context_)
+	static tcp_connection::pointer create(boost::asio::io_context& io_context_)
 	{
 		return pointer(new tcp_connection(io_context_));
 	}
@@ -25,13 +42,10 @@ public:
 	void close();
 
 	void init();
+
+	std::string get_id() const;
 private:
-
 	void received_hello(const BOOST_ERR_CODE& ec, size_t br);
-
-	void timer_expired(const BOOST_ERR_CODE& ec);
-
-	void timer_expired_fatal(const BOOST_ERR_CODE& ec);
 
 	inline void timeout_close()
 	{
@@ -39,55 +53,87 @@ private:
 		close();
 	}
 
-	tcp_connection(std::shared_ptr<boost::asio::io_context> io_context_);
+	// Checks if error occur and returns true true and closes socket if so
+	inline bool assert_no_error(const BOOST_ERR_CODE& ec)
+	{
+		if (ec.failed())
+		{
+			logger->error("Error occur: {}, {}", ec.value(), ec.message());
+			close();
+			return true;
+		}
+		return false;
+	}
 
+	tcp_connection(boost::asio::io_context& io_context_);
+
+	void handle_timeout_expiration(const BOOST_ERR_CODE& ec);
+
+	void handle_data(
+		const BOOST_ERR_CODE& ec, 
+		size_t bt, 
+		bool required, 
+		boost::function<void(const BOOST_ERR_CODE&, size_t)> next
+	);
+
+	void start_read_message();
+
+	void handle_message(const BOOST_ERR_CODE& ec, size_t bt);
+
+	// Asynchronously reads data of the given type from socket
+	// Closes connection if:
+	// * `required` is true (default) and data cannot be read due to an error
+	// * timer expired 
 	template<typename T>
 	void async_read_message(
 		boost::function<void(const BOOST_ERR_CODE&, size_t)> h,
-		boost::function<void(const BOOST_ERR_CODE&)> th,
-		std::chrono::milliseconds timeout = std::chrono::milliseconds::zero()
+		boost::posix_time::milliseconds timeout,
+		bool required = true
 	)
 	{
 		static const char* typename_ = TYPE_NAME(T);
-		spdlog::debug("{} - reserved for {} ({} bytes)", address_string, typename_, sizeof(T));
+		logger->debug("{} bytes reserved for {}, dynamic storage allocated", sizeof(T), typename_);
 		auto buf = dynamic_storage_.allocate_asio_buffer<T>();
-		if (timeout.count() == 0)
-		{
-			socket_.async_read_some(buf, h);
-		}
-		_STATEDB_UTILS read_with_timeout(
-			socket_,
-			buf,
-			HELLO_TIMEOUT,
-			h,
-			th,
-			deadline_timer_
+
+		// Read the data
+		socket_.async_read_some(
+			buf, 
+			boost::bind(
+				&tcp_connection::handle_data, 
+				this,
+				boost::asio::placeholders::error,
+				boost::asio::placeholders::bytes_transferred,
+				required,
+				h
+				)
 		);
-	}
-
-	void _async_read_message_or_close__read(boost::function<void(const BOOST_ERR_CODE&, size_t)> h, const BOOST_ERR_CODE& ec, size_t bt);
-
-	void _async_read_message_or_close__timeout(const BOOST_ERR_CODE& ec);
-
-	template<typename U>
-	inline void async_read_message_or_close(
-		boost::function<void(const BOOST_ERR_CODE&, size_t)> h,
-		std::chrono::milliseconds timeout = 0ms
-	)
-	{
-		async_read_message<U>(
-			boost::bind(&tcp_connection::_async_read_message_or_close__read, this, h, boost::asio::placeholders::error, boost::asio::placeholders::bytes_transferred),
-			boost::bind(&tcp_connection::_async_read_message_or_close__timeout, this, boost::asio::placeholders::error),
-			timeout
+		if (timeout.ticks() != 0)
+		{
+			// Run timeout if specified
+			deadline_timer_.expires_from_now(timeout);
+			deadline_timer_.async_wait(
+				boost::bind(
+					&tcp_connection::handle_timeout_expiration, 
+					this, 
+					boost::asio::placeholders::error
+				)
 			);
+		}
 	}
 
-	boost::posix_time::milliseconds HELLO_TIMEOUT = STATEDB_NET_HELLO_TIMEOUT;
-	boost::posix_time::milliseconds PING_TIMEOUT = STATEDB_NET_PING_TIMEOUT;
+	// Common case for async_read_message function. Reads data with deafault timeout.
+	// Operation is assummed to be required.
+	template<typename T>
+	inline void async_read_message(boost::function<void(const BOOST_ERR_CODE&, size_t)> h)
+	{
+		async_read_message<T>(h, TIMEOUT, true);
+	}
+
+	boost::posix_time::milliseconds TIMEOUT = STATEDB_NET_TIMEOUT;
 	boost::asio::ip::tcp::socket socket_;
-	std::shared_ptr<boost::asio::io_context> io_context_;
-	std::unique_ptr<boost::asio::deadline_timer> deadline_timer_ = nullptr;
-	std::string timed_out_action = "";
+	boost::asio::io_context& io_context_;
+	boost::asio::deadline_timer deadline_timer_;
+	std::string timed_out_action = ""; // DEPRECATED?
 	std::string address_string;
 	std::shared_ptr<spdlog::logger> logger = nullptr;
 

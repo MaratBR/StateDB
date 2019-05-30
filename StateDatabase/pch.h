@@ -8,6 +8,8 @@
 #include <istream>
 #include <ostream>
 #include <fstream>
+#include <iomanip>
+#include <sstream>
 
 #include <typeinfo>
 #include <vector>

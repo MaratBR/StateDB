@@ -3,7 +3,7 @@
 
 _BEGIN_STATEDB_NET
 
-bool hello_message_static::valid(uint8_t proto_version)
+bool hello_message_static::valid(uint8_t proto_version) const
 {
 	return (
 		protocol_version == proto_version &&
@@ -14,5 +14,12 @@ bool hello_message_static::valid(uint8_t proto_version)
 		_HELLO[4] == 'O'
 		);
 }
+
+
+bool message_preamble::valid() const
+{
+	return _PREAMBLE[0] == 'D' && _PREAMBLE[1] == 'o';
+}
+
 
 _END_STATEDB_NET

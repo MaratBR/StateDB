@@ -18,7 +18,9 @@ public:
 	inline void assert_type()
 	{
 		assert(has_value());
-		assert(strcmp(typeid(T).name(), type_name));
+		const char* name = typeid(T).name();
+		const char* current = type_name;
+		assert(strcmp(name, current) == 0);
 	}
 
 	template<typename T>
@@ -57,6 +59,11 @@ public:
 		data.clear();
 		type_name = "";
 		size_ = 0;
+	}
+
+	std::string get_type() const
+	{
+		return std::string(type_name);
 	}
 
 	auto get_asio_buffer()

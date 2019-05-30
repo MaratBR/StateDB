@@ -25,6 +25,8 @@
 #	define _D(x)
 #endif
 
+#define _REMOVE_ME(x) _D(x)
+
 #if DEBUG
 #	define _DD(debug, release) debug
 #else

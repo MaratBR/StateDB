@@ -6,7 +6,7 @@ _BEGIN_STATEDB
 
 namespace log_utils 
 {
-	std::string get_tab(size_t count) { return std::string(count, '\t'); }
+	inline std::string get_tab(size_t count) { return std::string(count, '\t'); }
 }
 
 _END_STATEDB

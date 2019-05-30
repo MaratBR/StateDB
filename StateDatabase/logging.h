@@ -11,8 +11,6 @@ namespace logging
 #define STATEDB_LOGGING_GLOBAL_LOGGER "G"
 #define STATEDB_LOGGING_SERVER_PREFIX "SERVER"
 
-#define _INLINE_D inline
-
 	inline std::shared_ptr<spdlog::logger> _construct_logger(std::string name)
 	{
 		auto logger = spdlog::stdout_color_mt(name);

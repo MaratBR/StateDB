@@ -34,13 +34,11 @@
 #define STATEDB_MAX_BLOCK_SIZE (1024*1024*256)
 #endif
 
-#ifndef STATEDB_NET_PING_TIMEOUT
-#define STATEDB_NET_PING_TIMEOUT ::boost::posix_time::milliseconds(15000)
+#ifndef STATEDB_NET_TIMEOUT
+#define STATEDB_NET_TIMEOUT ::boost::posix_time::milliseconds(60000)
 #endif
 
-#ifndef STATEDB_NET_HELLO_TIMEOUT
-#define STATEDB_NET_HELLO_TIMEOUT  ::boost::posix_time::milliseconds(20000)
-#endif
+#define STATEDB_SERVER_STATS_TASK_TIMEOUT ::boost::posix_time::minutes(2)
 
 #ifndef STATEDB_MAX_FSTREAM_BUFFER_SIZE
 #define STATEDB_MAX_FSTREAM_BUFFER_SIZE 1024*1024 // 1M buffer for inserting in the middle
@@ -61,5 +59,7 @@
 #define STATEDB_DB_DYNAMIC 4
 
 #define STATEDB_USER_DTYPE_LOW 256
+
+#define STATEDB_PROTOCOL_VERSION 1
 
 
