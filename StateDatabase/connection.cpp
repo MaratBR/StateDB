@@ -1,6 +1,6 @@
 #include "pch.h"
 #include "connection.h"
-#include "net_message.h"
+#include "format_utils.h"
 
 _BEGIN_STATEDB_NET
 
@@ -20,8 +20,20 @@ void tcp_connection::start()
 
 void tcp_connection::close()
 {
-	logger->info("Connection closed");
+	close(boost::system::errc::make_error_code(boost::system::errc::success));
+}
+
+void tcp_connection::close(BOOST_ERR_CODE ec)
+{
 	socket_.close();
+
+	logger->info(
+		L"Connection closed with error: {}, {}",
+		ec.value(),
+		_STATEDB_UTILS to_wstring(ec.message())
+	);
+
+	on_closed_(*this);
 }
 
 void tcp_connection::init()
@@ -32,11 +44,24 @@ void tcp_connection::init()
 	logger = logging::get_connection_logger(address_string);
 }
 
+
+// Returns ID (address string "IP:PORT" i.e. 123.7.45.9:12345) of the connection
 std::string tcp_connection::get_id() const
 {
 	return address_string;
 }
 
+void tcp_connection::on_new_message(boost::signals2::signal<void(tcp_connection&, message_preamble&)>::slot_type slot)
+{
+	on_new_message_.connect(slot);
+}
+
+void tcp_connection::on_close(boost::signals2::signal<void(tcp_connection&)>::slot_type slot)
+{
+	on_closed_.connect(slot);
+}
+
+// Handler for async operation - HELLO message
 void tcp_connection::received_hello(const BOOST_ERR_CODE& ec, size_t br)
 {
 	hello_message_static& hello = dynamic_storage_.get<hello_message_static>();
@@ -44,7 +69,7 @@ void tcp_connection::received_hello(const BOOST_ERR_CODE& ec, size_t br)
 	{
 		logger->warn("Invalid HELLO message: '{}' '{}' '{}' '{}' '{}', protocol byte: {}", 
 			hello._HELLO[0], hello._HELLO[1], hello._HELLO[2], hello._HELLO[3], hello._HELLO[4], hello._HELLO[5],
-			static_cast<int>(hello.protocol_version));
+			(uint16_t)(hello.protocol_version));
 		close();
 		dynamic_storage_.deallocate();
 		return;
@@ -52,46 +77,68 @@ void tcp_connection::received_hello(const BOOST_ERR_CODE& ec, size_t br)
 	logger->info("Received HELLO from {}", address_string);
 	dynamic_storage_.deallocate();
 
-	
+	start_read_message();
 }
 
-void tcp_connection::handle_timeout_expiration(const BOOST_ERR_CODE& ec)
+// Handles timeout expiration, closes connection when timeout expired
+void tcp_connection::handle_timeout_expiration(const BOOST_ERR_CODE& ec, std::shared_ptr<bool> operationIsDone)
 {
-	logger->info("Timeout expired with error code: {} ({}), action: {}", address_string, ec.value(), ec.message(), timed_out_action);
-	close();
+	if (*operationIsDone)
+		return;
+	logger->info(L"Timeout expired with error code: {} ({})", 
+		ec.value(), 
+		_STATEDB_UTILS to_wstring(ec.message())
+	);
+	close(ec);
 }
 
-void tcp_connection::handle_data(const BOOST_ERR_CODE& ec, size_t bt, bool required, boost::function<void(const BOOST_ERR_CODE&, size_t)> next)
+// Handler for async operation - reading data from socket
+void tcp_connection::handle_data(
+	const BOOST_ERR_CODE& ec, 
+	size_t bt, 
+	bool required, boost::function<void(const BOOST_ERR_CODE&, size_t)> next, 
+	std::shared_ptr<bool> operationIsDone
+)
 {
+	*operationIsDone = true;
 	logger->debug(
-		"Received {} bytes, current dynamic storage: {}, success: {}, errno: {}, errmsg: {}", 
+		L"Received {} bytes, current dynamic storage: {}, success: {}, errno: {}, errmsg: {}", 
 		bt, 
-		dynamic_storage_.get_type(),
+		_STATEDB_UTILS to_wstring(dynamic_storage_.get_type()),
 		!ec.failed(),
 		ec.value(),
-		ec.message()
+		_STATEDB_UTILS to_wstring(ec.message())
 		);
-	// If operation failed but required
+	// If operation failed but were required
 	if (required && ec.failed())
 	{
-		logger->error("Read oparation failed: {} {}", ec.value(), ec.message());
+		logger->error("Read operation failed: {} {}", ec.value(), ec.message());
 		close();
 		return;
 	}
 
 	// Cancels timer
-	deadline_timer_.cancel();
+	auto successEC = boost::system::errc::make_error_code(boost::system::errc::success);
+	deadline_timer_.cancel(successEC);
+	read_in_progress = false;
 	// Call next handler
 	next(ec, bt);
 }
 
+// Starts async. reading operation 
 void tcp_connection::start_read_message()
 {
+	if (!socket_.is_open())
+		return;
+
 	async_read_message<message_preamble>(
-		boost::bind(&tcp_connection::handle_message, this, boost::asio::placeholders::error, boost::asio::placeholders::bytes_transferred)
+		boost::bind(&tcp_connection::handle_message, this, boost::asio::placeholders::error, boost::asio::placeholders::bytes_transferred),
+		boost::posix_time::milliseconds(0),
+		true
 		);
 }
 
+// Handles new message's preamble
 void tcp_connection::handle_message(const BOOST_ERR_CODE& ec, size_t bt)
 {
 	if (assert_no_error(ec)) return;
@@ -101,19 +148,58 @@ void tcp_connection::handle_message(const BOOST_ERR_CODE& ec, size_t bt)
 
 	if (!msg.valid())
 	{
+		logger->warn("Received invalid message. ID: {}, PREAMBLE: {} {}", msg.id, msg._PREAMBLE[0], msg._PREAMBLE[1]);
+	}
+	else
+	{
+		logger->debug("Received message ID: {}", msg.id);
 
-		dynamic_storage_.deallocate();
+		// Call signal
+		on_new_message_(*this, msg);
+	}
+
+	dynamic_storage_.deallocate();
+	start_read_message();
+}
+
+void tcp_connection::handle_write_operation(
+	const BOOST_ERR_CODE& ec, 
+	size_t bt, 
+	bool required, 
+	boost::function<void(const BOOST_ERR_CODE&, size_t)> next,
+	std::shared_ptr<bool> operationIsDone
+)
+{
+	*operationIsDone = true;
+	logger->debug(
+		L"{} bytes are sent, current dynamic write storage: {}, success: {}, errno: {}, errmsg: {}",
+		bt,
+		_STATEDB_UTILS to_wstring(dynamic_write_storage_.get_type()),
+		!ec.failed(),
+		ec.value(),
+		_STATEDB_UTILS to_wstring(ec.message())
+	);
+
+	// If operation failed but were required
+	if (required && ec.failed())
+	{
+		logger->error(L"Write operation failed: {}, {}", ec.value(), _STATEDB_UTILS to_wstring(ec.message()));
+		close();
 		return;
 	}
 
-	// Deallocate message
-	dynamic_storage_.deallocate();
+	write_in_progress = false;
+	// Cancel timer
+	deadline_write_timer_.cancel();
+	// Call next handler
+	next(ec, bt);
 }
 
 tcp_connection::tcp_connection(boost::asio::io_context& io_context_)
 	: socket_(io_context_),
 	io_context_(io_context_),
-	deadline_timer_(io_context_)
+	deadline_timer_(io_context_),
+	deadline_write_timer_(io_context_)
 {
 }
 

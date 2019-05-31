@@ -13,8 +13,9 @@ struct hello_message_static
 
 struct message_preamble
 {
-	char _PREAMBLE[9] { 'D', 'o' };
+	char _PREAMBLE[2] { 'D', 'o' };
 	commands::command_t id;
+	uint32_t size;
 
 	bool valid() const;
 };

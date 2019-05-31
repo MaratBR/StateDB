@@ -1,5 +1,5 @@
 #pragma once
-#include "stdafx.h"
+#include "pch.h"
 #include "exceptions.h"
 #include "basic_types.h"
 
@@ -26,6 +26,7 @@ struct db_magic
 struct db_meta
 {
 	byte_t version = STATEDB_MAJOR_VERSION;
+	size_t file_size = 0; // Can be used for lazy resizing. When database loads header it's forced to close, resize and then reopen file
 
 	void set_defaults()
 	{

@@ -97,7 +97,7 @@ public:
 		return m_size > max_size;
 	}
 
-#if DEBUG
+#ifdef DEBUG
 	void debug_print(size_t depth = 0) override
 	{
 		print_depth(depth);

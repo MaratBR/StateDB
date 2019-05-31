@@ -48,7 +48,7 @@ public:
 		}
 	}
 
-#if DEBUG
+#ifdef DEBUG
 	void print_debug()
 	{
 		std::cout << "<tree>" << std::endl;

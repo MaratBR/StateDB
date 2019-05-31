@@ -71,7 +71,7 @@ template <typename T>
 void read_object(T * dest, std::istream & i)
 {
 	istream_wrp wrp(i);
-	read_object(dest, i);
+	read_object(dest, wrp);
 }
 
 template <

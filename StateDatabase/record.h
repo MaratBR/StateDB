@@ -1,17 +1,31 @@
 #pragma once
 #include "pch.h"
-#include "dtype_decl.h"
+#include "dtypes.h"
 
 _BEGIN_STATEDB
 
-class db_record 
+namespace db_record_impl
+{
+	template<typename T>
+	struct impl
+	{
+	};
+
+	template<>
+	class impl<int> {};
+}
+
+class db_record
 {
 public:
-
+	dtypes::dtype_e get_type() const;
+	void set(void* mem, size_t srcLen);
+	void set_type(dtypes::dtype_e type);
+	void set(dtypes::dtype_e dtype, void* mem, size_t srcLen);
+	size_t size() const;
 private:
-	dtype_id_t id;
-	byte_t* raw;
-	size_t len;
+	dtypes::dtype_e type = dtypes::NONE;
+	std::vector<char> data;
 };
 
 _END_STATEDB

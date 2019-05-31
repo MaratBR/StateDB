@@ -148,7 +148,7 @@ public:
 
 	TKey get_root_key() const { return m_root->m_pair.key; }
 
-#if DEBUG
+#ifdef DEBUG
 	void debug_print(size_t depth = 0)
 	{
 		print_depth(depth);

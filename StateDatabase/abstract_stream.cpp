@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "abstract_stream.h"
 
-using namespace statedb::utils;
+_BEGIN_STATEDB_UTILS
 
 istream_wrp::istream_wrp(std::istream& is)
 	: is(is)
@@ -56,3 +56,5 @@ abstract_ostream& ostream_wrp::seekp(std::streamoff off, std::ios_base::seekdir 
 	os.seekp(off, way);
 	return *this;
 }
+
+_END_STATEDB_UTILS

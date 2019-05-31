@@ -11,6 +11,7 @@ asio_server::asio_server(boost::asio::ip::tcp::endpoint ep)
 	address_string = boost::str(boost::format("%s:%d") % ep.address().to_string() % ep.port());
 	logger_ = logging::get_server_logger(address_string);
 	logger_->debug("New ASIO server instantiated: {}:{}", ep.address().to_string(), ep.port());
+	init_dispatcher();
 }
 
 void asio_server::start_listening()
@@ -20,6 +21,17 @@ void asio_server::start_listening()
 
 	start_stats_task();
 	start_accept();
+}
+
+void asio_server::handle_message(tcp_connection& conn, message_preamble& preamble)
+{
+	logger_->debug("Got message (ID: {}) from {}", preamble.id, conn.get_id());
+
+	bool hasHandler = dispatcher_.call(preamble.id, conn);
+	if (!hasHandler)
+	{
+		logger_->debug("Command {} not recognized", preamble.id);
+	}
 }
 
 void asio_server::handle_accept(tcp_connection::pointer connection, const boost::system::error_code& ec)
@@ -41,10 +53,29 @@ void asio_server::handle_accept(tcp_connection::pointer connection, const boost:
 	{
 		logger_->debug("New TCP connection established: {}:{}", connection->socket().remote_endpoint().address().to_string(), connection->socket().remote_endpoint().port());
 		connections[connection->get_id()] = connection;
+		connection->on_close(boost::bind(&asio_server::handle_connection_close, this, boost::placeholders::_1));
+		connection->on_new_message(boost::bind(&asio_server::handle_message, this, boost::placeholders::_1, boost::placeholders::_2));
 		connection->start();
 	}
 
 	start_accept();
+}
+
+void asio_server::handle_connection_close(tcp_connection& conn)
+{
+	io_service_.post(boost::bind(&asio_server::handle_connection_remove, this, conn.get_id()));
+}
+
+void asio_server::handle_connection_remove(std::string connId)
+{
+	connections.erase(connId);
+	logger_->debug("Connection {} were removed from hashmap", connId);
+}
+
+void asio_server::init_dispatcher()
+{
+	logger_->debug("Initializing dispatcher...");
+	//dispatcher_.register_handler<>();
 }
 
 void asio_server::start_stats_task()

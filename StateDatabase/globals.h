@@ -3,12 +3,16 @@
 
 // Debug stuff
 
-#define _FALLBACK_DEBUG false
+// TODO Rename DEBUG to IS_DEBUG to prevend collision with actual DEBUG from GCC and other compilers
+
+#define _DEBUG_IS_DEFAULT true
 #ifndef DEBUG
 #	ifdef _DEBUG
-#		define DEBUG _DEBUG
+#		define DEBUG
 #	else
-#		define DEBUG _FALLBACK_DEBUG
+#		if _DEBUG_IS_DEFAULT
+#			define DEBUG
+#		endif
 #	endif
 #endif
 
@@ -19,7 +23,7 @@
 #endif
 
 
-#if DEBUG
+#ifdef DEBUG
 #	define _D(x) x
 #else
 #	define _D(x)
@@ -27,7 +31,7 @@
 
 #define _REMOVE_ME(x) _D(x)
 
-#if DEBUG
+#ifdef DEBUG
 #	define _DD(debug, release) debug
 #else
 #	define _DD(debug, release) release
@@ -38,7 +42,7 @@
 #define DEBUG_LOG(x) _D( _LOG(x) )
 
 
-#if DEBUG
+#ifdef DEBUG
 #	include <iostream>
 #	define print_depth(x) 
 #endif

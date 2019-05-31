@@ -16,7 +16,6 @@ struct db_inner : public _STATEDB_UTILS stream_rw<db_inner>
 {
 	statedb::bpt::tree<db_key_type, db_record, 6>* tree = nullptr;
 	db_header header;
-	dtypes_collection dtypes;
 
 	db_inner() {}
 	~db_inner()
@@ -28,7 +27,9 @@ struct db_inner : public _STATEDB_UTILS stream_rw<db_inner>
 		}
 	}
 
+#ifdef DEBUG
 	void debug_print();
+#endif
 
 	virtual void write_to(_STATEDB_UTILS abstract_ostream& o) override;
 	virtual void read_from(_STATEDB_UTILS abstract_istream& i) override;

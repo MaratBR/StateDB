@@ -35,10 +35,11 @@
 #endif
 
 #ifndef STATEDB_NET_TIMEOUT
-#define STATEDB_NET_TIMEOUT ::boost::posix_time::milliseconds(60000)
+#define STATEDB_NET_TIMEOUT ::boost::posix_time::milliseconds(6000)
 #endif
 
 #define STATEDB_SERVER_STATS_TASK_TIMEOUT ::boost::posix_time::minutes(2)
+#define STATEDB_MAX_OPERATIONS_PENDING 256
 
 #ifndef STATEDB_MAX_FSTREAM_BUFFER_SIZE
 #define STATEDB_MAX_FSTREAM_BUFFER_SIZE 1024*1024 // 1M buffer for inserting in the middle
@@ -53,12 +54,7 @@
 
 #include "commands.h"
 
-#define STATEDB_DB_INT16_TYPE 1
-#define STATEDB_DB_BYTE_TYPE 2
-#define STATEDB_DB_INT32_TYPE 3
-#define STATEDB_DB_DYNAMIC 4
-
-#define STATEDB_USER_DTYPE_LOW 256
+#define STATEDB_USER_DTYPE_LOW 256 // DEPRECATED Initially when I thought about giving the client opportunity to create custom types, this was a minimal ID for user-defined type
 
 #define STATEDB_PROTOCOL_VERSION 1
 

@@ -45,6 +45,13 @@ public:
 		data.resize(size_);
 	}
 
+	template<typename T>
+	inline void copy_from(T& src)
+	{
+		allocate<T>();
+		construct<T>(src);
+	}
+
 	template<typename T, typename ...TArgs>
 	void construct(TArgs... args)
 	{

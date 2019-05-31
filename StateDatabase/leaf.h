@@ -53,7 +53,7 @@ public:
 	bool is_leaf() const noexcept override { return true; }
 	TKey primary_key() const override { return this->m_list.get_root_key(); }
 	bool is_full() const noexcept override { return size() > max_size; }
-#if DEBUG
+#ifdef DEBUG
 	void debug_print(size_t depth = 0) override
 	{
 		print_depth(depth);

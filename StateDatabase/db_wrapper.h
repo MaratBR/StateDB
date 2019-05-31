@@ -1,7 +1,7 @@
 #pragma once
 #include "pch.h"
 #include "db.h"
-
+#include "logging.h"
 
 _BEGIN_STATEDB
 
@@ -14,17 +14,16 @@ class db_wrapper
 public:
 	db_wrapper(const fs::path workingDirectory, const std::string dbFilename = STATEDB_DEFAULT_DB_FILE)
 		: db_filepath(workingDirectory / dbFilename),
-		db_filename(dbFilename)
+		db_filename(dbFilename),
+		logger(logging::get_logger_with_prefix("DBw", dbFilename))
 	{
 		if (fs::create_directories(workingDirectory))
 		{
-			
-			
-			("Directory {} was created", workingDirectory.string());
+			logger->info("Directory {} was created", workingDirectory.string());
 		}
 
 		auto* ptr = this;
-		spdlog::debug("New instance of db object has been initialized workingDirectory={} file={} ptr={:x}", workingDirectory.string(), dbFilename, (size_t)this);
+		logger->debug("New instance of db wrapper has been initialized workingDirectory={} file={} ptr={:x}", workingDirectory.string(), dbFilename, (size_t)this);
 	}
 
 	~db_wrapper()
@@ -48,7 +47,7 @@ public:
 		dispose();
 		fstream = open_file();
 
-		spdlog::debug("Database file is open now");
+		logger->debug("Database file is open now");
 		verify_file();
 	}
 
@@ -61,9 +60,9 @@ public:
 private:
 	void verify_file()
 	{
-		spdlog::debug("Verifying file...");
+		logger->debug("Verifying file...");
 		uintmax_t size = fs::file_size(db_filepath);
-		spdlog::debug("File size = {}", size);
+		logger->debug("File size = {}", size);
 
 			
 		if (size < MINIMAL_HEADER_SIZE)
@@ -126,6 +125,7 @@ private:
 	const std::string db_filename;
 	fs::fstream* fstream = nullptr;
 	db* _db = nullptr;
+	std::shared_ptr<spdlog::logger> logger;
 };
 
 _END_STATEDB

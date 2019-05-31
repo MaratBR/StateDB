@@ -7,7 +7,7 @@ void dtypes_collection::add(dtype_decl decl)
 {
 	if (decl.id < STATEDB_USER_DTYPE_LOW)
 	{
-		throw db_exception("ID lesser than " STR(USER_DTYPE_LOW) " is not allowed for custom user types");
+		throw db_exception("ID lesser than " STR(STATEDB_USER_DTYPE_LOW) " is not allowed for custom user types");
 	}
 	m_dtypes[decl.id] = decl;
 }

@@ -1,6 +1,7 @@
 #pragma once
 #include "pch.h"
 #include "connection.h"
+#include "dispatcher.h"
 
 _BEGIN_STATEDB_NET
 
@@ -9,6 +10,14 @@ class asio_server
 public:
 	using io_pointer = std::shared_ptr<boost::asio::io_context>;
 	using acceptor_pointer = std::unique_ptr<boost::asio::ip::tcp::acceptor>;
+
+	struct handlers
+	{
+#define _MSG_HANDLER(name) struct name { void operator()(tcp_connection& conn); }
+
+		_MSG_HANDLER(ping_handler);
+		_MSG_HANDLER(get_handler);
+	};
 
 	asio_server(boost::asio::ip::tcp::endpoint ep);
 
@@ -23,6 +32,8 @@ public:
 		return is_listening_;
 	}
 private:
+	void init_dispatcher();
+
 	void start_stats_task();
 
 	void start_accept()
@@ -41,7 +52,10 @@ private:
 
 	void stats_printer(const BOOST_ERR_CODE& ec);
 
+	void handle_message(tcp_connection& conn, message_preamble& preamble);
 	void handle_accept(tcp_connection::pointer connection, const boost::system::error_code& ec);
+	void handle_connection_close(tcp_connection& conn);
+	void handle_connection_remove(std::string connId);
 
 	boost::asio::io_context io_service_;
 	boost::asio::ip::tcp::acceptor acceptor_;
@@ -51,6 +65,7 @@ private:
 	std::map<std::string, tcp_connection::pointer> connections;
 	boost::asio::deadline_timer stats_timer;
 	std::chrono::system_clock::time_point start_time;
+	_STATEDB_UTILS dispatcher<commands::command_t, tcp_connection&> dispatcher_;
 };
 
 _END_STATEDB_NET

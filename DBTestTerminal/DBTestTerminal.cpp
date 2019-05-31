@@ -1,6 +1,9 @@
 ﻿#include "pch_terminal.h"
 #include <asio_server.h>
+#include <db_wrapper.h>
+
 #include <locale>
+#include <filesystem>
 
 using namespace std;
 
@@ -27,28 +30,45 @@ void show_header()
 		<< endl;
 }
 
+std::shared_ptr<spdlog::logger> global_logger;
+
+void prepare()
+{
+	global_logger = statedb::logging::get_global_logger();
+	SetConsoleOutputCP(CP_UTF8);
+	setlocale(LC_ALL, "Russian");
+#ifdef DEBUG
+	spdlog::set_level(spdlog::level::debug);
+#endif
+}
+
 int main()
 {
-	setlocale(LC_ALL, "Russian");
-	spdlog::set_level(spdlog::level::debug);
+	prepare();
+
 	show_header();
 
-	statedb::net::asio_server server(boost::asio::ip::tcp::endpoint(
-		boost::asio::ip::address_v4::loopback(), 3456));
+	//statedb::net::asio_server server(boost::asio::ip::tcp::endpoint(
+	//	boost::asio::ip::address_v4::loopback(), 3456));
 
-	server.start_listening();
-	server.run();
-	//time_t rawtime;
-	//tm timeinfo;
-	//char* buffer = new char[strlen(STATEDB_DEFAULT_DB_FILE) + 80];
-	//memcpy_s(buffer, strlen(STATEDB_DEFAULT_DB_FILE), STATEDB_DEFAULT_DB_FILE, strlen(STATEDB_DEFAULT_DB_FILE));
+	//server.start_listening();
+	//server.run();
 
-	//time(&rawtime);
-	//localtime_s(&timeinfo, &rawtime);
-	//strftime(buffer + strlen(STATEDB_DEFAULT_DB_FILE), 80, "%d-%m-%YT%H-%M-%S", &timeinfo);
+	statedb::db_wrapper dbw(boost::filesystem::current_path());
+	
+	_TRY
+		dbw.load_data();
+	_CRITICAL_CATCH
 
-	//delete db;
+	time_t rawtime;
+	tm timeinfo;
+	char* buffer = new char[strlen(STATEDB_DEFAULT_DB_FILE) + 80];
+	memcpy_s(buffer, strlen(STATEDB_DEFAULT_DB_FILE), STATEDB_DEFAULT_DB_FILE, strlen(STATEDB_DEFAULT_DB_FILE));
 
-	//fs::copy_file(STATEDB_DEFAULT_DB_FILE, buffer);
-	//fs::remove(fs::current_path() / STATEDB_DEFAULT_DB_FILE);
+	time(&rawtime);
+	localtime_s(&timeinfo, &rawtime);
+	strftime(buffer + strlen(STATEDB_DEFAULT_DB_FILE), 80, "%d-%m-%YT%H-%M-%S", &timeinfo);
+
+	std::filesystem::copy_file(STATEDB_DEFAULT_DB_FILE, buffer);
+	std::filesystem::remove(std::filesystem::current_path() / STATEDB_DEFAULT_DB_FILE);
 }

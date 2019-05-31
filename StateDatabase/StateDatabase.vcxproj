@@ -169,6 +169,7 @@
     <ClInclude Include="asio_server.h" />
     <ClInclude Include="asio_stream.h" />
     <ClInclude Include="basic_types.h" />
+    <ClInclude Include="bigint.h" />
     <ClInclude Include="bpt.h" />
     <ClInclude Include="bpt_base.h" />
     <ClInclude Include="bpt_internal.h" />
@@ -181,6 +182,8 @@
     <ClInclude Include="db_vector.h" />
     <ClInclude Include="db_wrapper.h" />
     <ClInclude Include="deadline_timers.h" />
+    <ClInclude Include="dispatcher.h" />
+    <ClInclude Include="dtypes.h" />
     <ClInclude Include="dtypes_collection.h" />
     <ClInclude Include="dtype_decl.h" />
     <ClInclude Include="dynamic_storage.h" />
@@ -208,8 +211,6 @@
     <ClCompile Include="abstract_stream.cpp" />
     <ClCompile Include="asio_server.cpp" />
     <ClCompile Include="asio_stream.cpp" />
-    <ClCompile Include="basic_types.cpp" />
-    <ClCompile Include="commands.cpp" />
     <ClCompile Include="connection.cpp" />
     <ClCompile Include="db.cpp" />
     <ClCompile Include="db_header.cpp" />
@@ -225,6 +226,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="record.cpp" />
     <ClCompile Include="utils.cpp" />
   </ItemGroup>
   <ItemGroup>
