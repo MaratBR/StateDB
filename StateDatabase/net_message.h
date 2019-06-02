@@ -3,6 +3,9 @@
 
 _BEGIN_STATEDB_NET
 
+// Remove padding for messages
+#pragma pack(push, 1)
+
 struct hello_message_static
 {
 	char _HELLO[5] { 'H', 'e', 'L', 'l', 'O' };
@@ -11,22 +14,15 @@ struct hello_message_static
 	bool valid(uint8_t proto_version) const;
 };
 
+
 struct message_preamble
 {
-	char _PREAMBLE[3] { 'M', 'S', 'G' };
+	const char _PREAMBLE[3]{ 'M', 'S', 'G' };
 	commands::command_t id;
 	uint32_t size;
 
+
 	bool valid() const;
-};
-
-struct processed_message
-{
-	processed_message(const commands::command_t id, const uint32_t size, std::shared_ptr<void> buffer);
-
-	const commands::command_t id;
-	const uint32_t size;
-	const std::shared_ptr<void> buffer;
 };
 
 struct message_out_preamble
@@ -44,6 +40,18 @@ struct static_simple_message : public message_out_preamble
 	}
 };
 
-using make_pong_message = static_simple_message<CMD_PONG>;
+using make_pong_message = static_simple_message<commands::response_pong>;
+
+#pragma pack(pop)
+
+
+struct processed_message
+{
+	processed_message(const commands::command_t id, const uint32_t size, std::shared_ptr<void> buffer);
+
+	const commands::command_t id;
+	const uint32_t size;
+	const std::shared_ptr<void> buffer;
+};
 
 _END_STATEDB_NET

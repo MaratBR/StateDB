@@ -5,7 +5,7 @@
 
 // TODO Rename DEBUG to IS_DEBUG to prevend collision with actual DEBUG from GCC and other compilers
 
-#define _DEBUG_IS_DEFAULT true
+#define _DEBUG_IS_DEFAULT false
 #ifndef DEBUG
 #	ifdef _DEBUG
 #		define DEBUG

@@ -4,6 +4,7 @@
 
 #include <locale>
 #include <filesystem>
+#include <iostream>
 
 using namespace std;
 
@@ -44,27 +45,27 @@ void prepare()
 
 int main()
 {
-	statedb::db_object obj;
+	/*statedb::db_object obj;
 
 	for (auto p : statedb::dtypes::implementors())
 	{
 		obj.set_type(p.first);
-		std::cout << obj.get_type();
+		std::cout << (int)obj.get_type();
 	}
 	obj.set_type(STATEDB_DTYPE_BLOB);
 
 	
 	int a = sizeof(statedb::db_object);
-	return 0;
+	return 0;*/
 	prepare();
 
 	show_header();
 
-	//statedb::net::asio_server server(boost::asio::ip::tcp::endpoint(
-	//	boost::asio::ip::address_v4::loopback(), 3456));
+	statedb::net::asio_server server(boost::asio::ip::tcp::endpoint(
+		boost::asio::ip::address_v4::loopback(), 3456));
 
-	//server.start_listening();
-	//server.run();
+	server.start_listening();
+	server.run();
 
 	statedb::db_wrapper dbw(boost::filesystem::current_path());
 	

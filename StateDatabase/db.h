@@ -52,7 +52,6 @@ public:
 		utils::write_object(magic, fstream);
 
 		generate_inner();
-		inner->debug_print();
 		utils::write_object(*inner, fstream);
 	}
 
@@ -104,8 +103,6 @@ public:
 		verify_magic();
 
 		_STATEDB_UTILS read_object(&inner->header, fstream);
-
-		inner->debug_print();
 	}
 
 	std::fstream& fstream;
