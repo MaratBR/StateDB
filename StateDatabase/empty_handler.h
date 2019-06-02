@@ -3,7 +3,6 @@
 
 _BEGIN_STATEDB_NET
 
-
 #define STATEDB_ASIO_EMPTY_HANDLER [](const BOOST_ERR_CODE&, size_t){}
 
 _END_STATEDB_NET

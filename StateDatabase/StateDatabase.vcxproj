@@ -181,7 +181,6 @@
     <ClInclude Include="db_header.h" />
     <ClInclude Include="db_vector.h" />
     <ClInclude Include="db_wrapper.h" />
-    <ClInclude Include="deadline_timers.h" />
     <ClInclude Include="dispatcher.h" />
     <ClInclude Include="dtypes.h" />
     <ClInclude Include="dtypes_collection.h" />

@@ -7,6 +7,12 @@
 #include "net_message.h"
 #include "empty_handler.h"
 
+/* Main connection class. 
+ * Implements read and write operations, timeout and pending operation queue.
+ * TODOS:
+ *	- Unify read/write operation methods for dynamic (aka "raw binary") and static operations (the ones that can be used for reading particular structure from socket) 
+ */
+
 
 _BEGIN_STATEDB_NET
 
@@ -53,6 +59,34 @@ public:
 		{
 			//ds.async_read_message<T>(handler);
 		}
+	};
+
+	struct pending_write_raw_operation : public pending_operation_base
+	{
+		pending_write_raw_operation(
+			void* memory, 
+			size_t size,
+			boost::function<void(const BOOST_ERR_CODE&, size_t)> handler_,
+			bool required_,
+			boost::posix_time::milliseconds timeout_
+		);
+
+		virtual void perform(tcp_connection& ds) override;
+		size_t size;
+		void* memory;
+	};
+
+	struct pending_read_raw_operation : public pending_operation_base
+	{
+		pending_read_raw_operation(
+			size_t s,
+			boost::function<void(const BOOST_ERR_CODE&, size_t)> handler_,
+			bool required_,
+			boost::posix_time::milliseconds timeout_
+		);
+
+		virtual void perform(tcp_connection& ds) override;
+		size_t size;
 	};
 
 	using pointer = std::shared_ptr<tcp_connection>;
@@ -146,6 +180,14 @@ public:
 		}
 	}
 
+	void async_write_raw(
+		void* memory,
+		size_t amount,
+		boost::function<void(const BOOST_ERR_CODE&, size_t)> h,
+		boost::posix_time::milliseconds timeout,
+		bool required = true
+	);
+
 	// Shortcut for @code async_write_message<T>(val, STATEDB_ASIO_EMPTY_HANDLER, timeout, required); @endcode
 	template<typename T>
 	inline void async_write_message(
@@ -195,6 +237,13 @@ public:
 		T val;
 		async_read_message<T>(val);
 	}
+
+	void async_read_raw(
+		size_t amount,
+		boost::function<void(const BOOST_ERR_CODE&, size_t)> h,
+		boost::posix_time::milliseconds timeout,
+		bool required = true
+	);
 
 	// Asynchronously reads data of the given type from socket
 	// Closes connection if:
@@ -254,18 +303,6 @@ public:
 
 	template<typename T>
 	friend struct pending_write_operation;
-
-
-	// Function for generic read operation.
-	// TDynamicStorageAdapter defines the way memory is allocate inside dynamic_storage.
-	// TDynamicStorageAdapter must define operator() with following signature:
-	// @code auto allocate(statedb::utils::dynamic_storage& ds); @endcode
-	// This function will be used for allocating space inside dynamic_storage and creating buffer from Boost.Asio (which must be returned by operator())
-	/*template<typename TDynamicStorageAdapter>
-	void async_read_factory_function()
-	{
-
-	}*/
 private:
 	using pending_operations_queue = std::queue<std::shared_ptr<pending_operation_base>>;
 

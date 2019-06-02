@@ -105,9 +105,6 @@
     <ClInclude Include="logging.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="deadline_timers.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
     <ClInclude Include="abstract_stream.h">
       <Filter>Файлы заголовков\utils</Filter>
     </ClInclude>

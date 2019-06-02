@@ -4,6 +4,36 @@
 
 _BEGIN_STATEDB_NET
 
+tcp_connection::pending_write_raw_operation::pending_write_raw_operation(
+	void* memory, 
+	size_t size, 
+	boost::function<void(const BOOST_ERR_CODE&, size_t)> handler_, 
+	bool required_, 
+	boost::posix_time::milliseconds timeout_
+)
+	: tcp_connection::pending_operation_base(handler_, required_, timeout_), size(size), memory(memory)
+{
+}
+
+void tcp_connection::pending_write_raw_operation::perform(tcp_connection& ds)
+{
+	
+}
+
+tcp_connection::pending_read_raw_operation::pending_read_raw_operation(
+	size_t s,
+	boost::function<void(const BOOST_ERR_CODE&, size_t)> handler_,
+	bool required_,
+	boost::posix_time::milliseconds timeout_
+)
+	: tcp_connection::pending_operation_base(handler_, required_, timeout_), size(s)
+{
+}
+
+void tcp_connection::pending_read_raw_operation::perform(tcp_connection& ds)
+{
+}
+
 ASIO_SOCKET& tcp_connection::socket()
 {
 	return socket_;
@@ -59,6 +89,77 @@ void tcp_connection::on_new_message(boost::signals2::signal<void(tcp_connection&
 void tcp_connection::on_close(boost::signals2::signal<void(tcp_connection&)>::slot_type slot)
 {
 	on_closed_.connect(slot);
+}
+
+void tcp_connection::async_write_raw(void* memory, size_t amount, boost::function<void(const BOOST_ERR_CODE&, size_t)> h, boost::posix_time::milliseconds timeout, bool required)
+{
+	if (amount == 0) return;
+	if (write_in_progress)
+	{
+		logger->debug("Write operation for binary({}) delayed due to another write operation being processed", amount);
+		pending_write_operations.push(
+			std::shared_ptr<pending_operation_base>(new pending_write_raw_operation(memory, amount, h, required, timeout))
+		);
+		return;
+	}
+	write_in_progress = true;
+	std::shared_ptr<bool> operation_done(new bool(false));
+
+	logger->debug("{0} bytes reserved for write operation for binary", amount);
+	dynamic_write_storage_.allocate_binary(amount);
+
+	socket_.async_write_some(
+		dynamic_write_storage_.get_asio_buffer(),
+		boost::bind(
+			&tcp_connection::handle_write_operation,
+			this,
+			boost::asio::placeholders::error,
+			boost::asio::placeholders::bytes_transferred,
+			required,
+			h,
+			operation_done
+		)
+	);
+
+	if (timeout.ticks() != 0)
+	{
+		// Run timeout if specified
+		run_timer(deadline_write_timer_, timeout, operation_done);
+	}
+}
+
+void tcp_connection::async_read_raw(size_t amount, boost::function<void(const BOOST_ERR_CODE&, size_t)> h, boost::posix_time::milliseconds timeout, bool required)
+{
+	if (read_in_progress)
+	{
+		logger->debug("Read operation for binary({}) delayed due to another read operation being processed", amount);
+		pending_read_operations.push(
+			std::shared_ptr<pending_operation_base>(new pending_read_raw_operation(amount, h, required, timeout))
+		);
+		return;
+	}
+	read_in_progress = true;
+	logger->debug("{} bytes reserved for binary", amount);
+	dynamic_storage_.allocate_binary(amount);
+	std::shared_ptr<bool> operation_done(new bool(false));
+
+	// Read the data
+	socket_.async_read_some(
+		dynamic_storage_.get_asio_buffer(),
+		boost::bind(
+			&tcp_connection::handle_data,
+			this,
+			boost::asio::placeholders::error,
+			boost::asio::placeholders::bytes_transferred,
+			required,
+			h,
+			operation_done
+		)
+	);
+	if (timeout.ticks() != 0)
+	{
+		run_timer(deadline_timer_, timeout, operation_done);
+	}
 }
 
 // Handler for async operation - HELLO message
@@ -205,3 +306,5 @@ tcp_connection::tcp_connection(boost::asio::io_context& io_context_)
 }
 
 _END_STATEDB_NET
+
+
