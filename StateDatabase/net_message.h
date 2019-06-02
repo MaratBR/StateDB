@@ -13,18 +13,37 @@ struct hello_message_static
 
 struct message_preamble
 {
-	char _PREAMBLE[2] { 'D', 'o' };
+	char _PREAMBLE[3] { 'M', 'S', 'G' };
 	commands::command_t id;
 	uint32_t size;
 
 	bool valid() const;
 };
 
-struct indetity_message 
+struct processed_message
 {
-	bool has_identity = false;
-	char* login = nullptr;
-	char* password = nullptr;
+	processed_message(const commands::command_t id, const uint32_t size, std::shared_ptr<void> buffer);
+
+	const commands::command_t id;
+	const uint32_t size;
+	const std::shared_ptr<void> buffer;
 };
+
+struct message_out_preamble
+{
+	commands::command_t id;
+	uint32_t size;
+};
+
+template<commands::command_t ID>
+struct static_simple_message : public message_out_preamble
+{
+	static_simple_message()
+	{
+		id = ID;
+	}
+};
+
+using make_pong_message = static_simple_message<CMD_PONG>;
 
 _END_STATEDB_NET

@@ -2,9 +2,9 @@
 #include "pch.h"
 #include "bpt.h"
 #include "utils.h"
-#include "record.h"
 #include "db_header.h"
 #include "dtypes_collection.h"
+#include "object.h"
 
 _BEGIN_STATEDB
 
@@ -14,7 +14,7 @@ const char* const ERR_DESCRIPTION_INVALID_MAGIC = "Invalid magic value";
 
 struct db_inner : public _STATEDB_UTILS stream_rw<db_inner>
 {
-	statedb::bpt::tree<db_key_type, db_record, 6>* tree = nullptr;
+	statedb::bpt::tree<db_key_type, db_object, 6>* tree = nullptr;
 	db_header header;
 
 	db_inner() {}

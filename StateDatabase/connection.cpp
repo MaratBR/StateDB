@@ -96,7 +96,8 @@ void tcp_connection::handle_timeout_expiration(const BOOST_ERR_CODE& ec, std::sh
 void tcp_connection::handle_data(
 	const BOOST_ERR_CODE& ec, 
 	size_t bt, 
-	bool required, boost::function<void(const BOOST_ERR_CODE&, size_t)> next, 
+	bool required, 
+	boost::function<void(const BOOST_ERR_CODE&, size_t)> next, 
 	std::shared_ptr<bool> operationIsDone
 )
 {

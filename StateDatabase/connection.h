@@ -5,6 +5,7 @@
 #include "logging.h"
 #include "net_utils.h"
 #include "net_message.h"
+#include "empty_handler.h"
 
 
 _BEGIN_STATEDB_NET
@@ -145,6 +146,56 @@ public:
 		}
 	}
 
+	// Shortcut for @code async_write_message<T>(val, STATEDB_ASIO_EMPTY_HANDLER, timeout, required); @endcode
+	template<typename T>
+	inline void async_write_message(
+		T& val,
+		boost::posix_time::milliseconds timeout,
+		bool required = true
+	)
+	{
+		async_write_message<T>(val, STATEDB_ASIO_EMPTY_HANDLER, timeout, required);
+	}
+
+	// Shortcut for @code async_write_message<T>(val, h, TIMEOUT, required); @endcode
+	// Where TIMEOUT - is default timeout for connection, defined as constant private member.
+	template<typename T>
+	inline void async_write_message(
+		T& val,
+		boost::function<void(const BOOST_ERR_CODE&, size_t)> h,
+		bool required = true
+	)
+	{
+		async_write_message<T>(val, h, TIMEOUT, required);
+	}
+
+	// Shortcut for 
+	// @code async_read_message<T>(val, TIMEOUT); @endcode
+	// OR
+	// @code async_write_message<T>(val, STATEDB_ASIO_EMPTY_HANDLER, TIMEOUT, true); @endcode
+	template<typename T>
+	inline void async_write_message(
+		T& val
+	)
+	{
+		async_read_message<T>(val, TIMEOUT);
+	}
+
+	// Writes message of the given type to the socket.
+	// Constructs object using default constructor.
+	// This function is equivalent to:
+	// @code
+	//	T val;
+	//	connectionObject.async_write_message(val);
+	//	// val is out of scope now
+	// @endcode
+	template<typename T>
+	inline void async_write_message()
+	{
+		T val;
+		async_read_message<T>(val);
+	}
+
 	// Asynchronously reads data of the given type from socket
 	// Closes connection if:
 	// * `required` is true (default) and data cannot be read due to an error
@@ -189,12 +240,12 @@ public:
 		}
 	}
 
-	// Common case for async_read_message function. Reads data with deafault timeout.
+	// Common case for async_read_message function. Reads data with default timeout.
 	// Operation is assummed to be required.
 	template<typename T>
 	inline void async_read_message(boost::function<void(const BOOST_ERR_CODE&, size_t)> h)
 	{
-		async_read_message<T>(h, TIMEOUT, true);
+		async_read_message<T>(h, TIMEOUT);
 	}
 
 	// Allows pending operations to be perfomed by themselves
@@ -203,6 +254,18 @@ public:
 
 	template<typename T>
 	friend struct pending_write_operation;
+
+
+	// Function for generic read operation.
+	// TDynamicStorageAdapter defines the way memory is allocate inside dynamic_storage.
+	// TDynamicStorageAdapter must define operator() with following signature:
+	// @code auto allocate(statedb::utils::dynamic_storage& ds); @endcode
+	// This function will be used for allocating space inside dynamic_storage and creating buffer from Boost.Asio (which must be returned by operator())
+	/*template<typename TDynamicStorageAdapter>
+	void async_read_factory_function()
+	{
+
+	}*/
 private:
 	using pending_operations_queue = std::queue<std::shared_ptr<pending_operation_base>>;
 

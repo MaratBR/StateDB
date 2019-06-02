@@ -4,6 +4,8 @@
 _BEGIN_STATEDB_UTILS
 
 
+#define STATEDB_DYNAMIC_STORAGE_BINARY "BINARY"
+
 class dynamic_storage
 {
 public:
@@ -14,14 +16,40 @@ public:
 		return data.size() != 0;
 	}
 
+	inline void assert_has_value()
+	{
+		assert(has_value());
+	}
+
+	inline void assert_type_is(const char* type)
+	{
+		auto current = get_type();
+		assert(current == type);
+	}
+
 	template<typename T>
 	inline void assert_type()
 	{
-		assert(has_value());
-		const char* name = typeid(T).name();
-		const char* current = type_name;
-		assert(strcmp(name, current) == 0);
+		assert_has_value();
+		assert_type_is(typeid(T).name());
 	}
+
+	inline void assert_binary()
+	{
+		assert_has_value();
+		assert_type_is(STATEDB_DYNAMIC_STORAGE_BINARY);
+	}
+
+	template<typename T>
+	inline bool is() const
+	{
+		return get_type() == typeid(T).name();
+	}
+
+	inline bool is_binary() const
+	{
+		return get_type() == STATEDB_DYNAMIC_STORAGE_BINARY;
+ 	}
 
 	template<typename T>
 	T& get()
@@ -30,10 +58,23 @@ public:
 		return *(reinterpret_cast<T*>(data.data()));
 	}
 
+	void* get_binary()
+	{
+		assert_binary();
+		return reinterpret_cast<void*>(data.data());
+	}
+
 	template<typename T>
 	void set(T& val)
 	{
 		assert_type<T>();
+	}
+
+	void set_binary(void* mem, size_t s)
+	{
+		assert_binary();
+		assert(s <= size_);
+		std::memcpy(data.data(), mem, s);
 	}
 
 	template<typename T>
@@ -43,6 +84,21 @@ public:
 		type_name = typeid(T).name();
 		size_ = sizeof(T);
 		data.resize(size_);
+	}
+
+	void allocate_binary(size_t s)
+	{
+		deallocate();
+		type_name = STATEDB_DYNAMIC_STORAGE_BINARY;
+		size_ = s;
+		data.resize(s);
+	}
+
+	template<typename T, typename ...TArgs>
+	inline void allocate_constructed(TArgs... args)
+	{
+		allocate<T>();
+		construct<T>(args...);
 	}
 
 	template<typename T>
@@ -57,7 +113,7 @@ public:
 	{
 		assert_type<T>();
 		std::allocator<T> allocator_;
-		allocator_.construct(data.data(), args...);
+		std::allocator_traits<std::allocator<T>>::construct(allocator_, reinterpret_cast<T*>(data.data()), args...);
 	}
 
 	void deallocate()

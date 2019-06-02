@@ -27,7 +27,7 @@ void asio_server::handle_message(tcp_connection& conn, message_preamble& preambl
 {
 	logger_->debug("Got message (ID: {}) from {}", preamble.id, conn.get_id());
 
-	bool hasHandler = dispatcher_.call(preamble.id, conn);
+	bool hasHandler = dispatcher_.call(preamble.id, conn, *this, preamble);
 	if (!hasHandler)
 	{
 		logger_->debug("Command {} not recognized", preamble.id);
@@ -101,5 +101,39 @@ void asio_server::stats_printer(const BOOST_ERR_CODE& ec)
 
 	start_stats_task();
 }
+
+
+/// MESSAGE HANDLER
+
+asio_server::handlers::process_message::process_message(boost::function<void(tcp_connection&, asio_server&, processed_message&)> h)
+	: _handler(h)
+{
+}
+
+void asio_server::handlers::process_message::operator()(tcp_connection& conn, asio_server&, message_preamble& msgp)
+{
+	// Load message body
+
+}
+
+void asio_server::handlers::ping_handler::operator()(tcp_connection& conn, asio_server&, message_preamble&)
+{
+	make_pong_message pong;
+	conn.async_write_message<make_pong_message>(pong, [](const BOOST_ERR_CODE&, size_t) {});
+}
+
+void asio_server::handlers::get_handler::operator()(tcp_connection& conn, asio_server& server, message_preamble& msgp)
+{
+	
+}
+
+void asio_server::handlers::set_handler::operator()(tcp_connection&, asio_server&, message_preamble&)
+{
+}
+
+
+
+
+
 
 _END_STATEDB_NET

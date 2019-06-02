@@ -1,66 +1,159 @@
 #pragma once
 #include "pch.h"
+#include "dynamic_storage.h"
+#include "bigint.h"
+#include "memory_ptr.h"
 
 _BEGIN_STATEDB
 
 namespace dtypes
 {
-	enum dtype_e
+	using data_storage_type = _STATEDB_UTILS memory_ptr;
+
+	using dtype_t = uint8_t;
+
+#define STATEDB_DTYPE_NONE 0
+
+#define STATEDB_DTYPE_BLOB 1
+#define STATEDB_DTYPE_STRING 2
+
+#define STATEDB_DTYPE_INT8 3
+#define STATEDB_DTYPE_UINT8 4
+
+#define STATEDB_DTYPE_INT16 5
+#define STATEDB_DTYPE_UINT16 6
+
+#define STATEDB_DTYPE_INT32 7
+#define STATEDB_DTYPE_UINT32 8
+
+#define STATEDB_DTYPE_FLOAT	9
+#define STATEDB_DTYPE_DOUBLE 10
+
+#define STATEDB_DTYPE_BIGINT 12
+
+	class unsufficient_space : public std::exception
 	{
-		NONE	= 0,
-
-		BLOB	= 1,
-		STRING	= 2,
-
-		INT8	= 3,
-		UINT8	= 4,
-
-		INT16	= 5,
-		UINT16	= 6,
-
-		INT32	= 7,
-		UINT32	= 8,
-
-		FLOAT	= 9,
-		DOUBLE	= 10,
-
-		BIGINT	= 12
+	public:
+		unsufficient_space() : std::exception("Not enough space for data") {}
 	};
 
-	const std::set<dtype_e> dynamic_types = { BLOB, STRING, BIGINT };
-
-	const std::map<dtype_e, size_t> static_sizes = {
-		{NONE, 0},
-		{INT8, 1},
-		{UINT8, 1},
-
-		{INT16, 2},
-		{UINT16, 2},
-
-		{INT32, 4},
-		{UINT32, 4},
-		{FLOAT, sizeof(float)},
-		{DOUBLE, sizeof(double)}
-	};
-
-	inline bool has_type(dtype_e dt)
+	namespace impl
 	{
-		return dynamic_types.find(dt) != dynamic_types.end() || static_sizes.find(dt) != static_sizes.end();
-	}
-
-	inline bool is_dynamic(dtype_e dt)
-	{
-		return dynamic_types.find(dt) != dynamic_types.end();
-	}
-
-	inline size_t get_static_size(dtype_e dt)
-	{
-		auto it = static_sizes.find(dt);
-		if (it != static_sizes.end())
+		inline void require_at_least(size_t bytes, size_t required)
 		{
-			return it->second;
+			if (bytes < required)
+				throw unsufficient_space();
 		}
-		return 0;
+
+		class implementor_base
+		{
+		public:
+			virtual void init(data_storage_type& ds) = 0;
+			virtual bool is_numeric() const = 0;
+			virtual bool is_dynamic() const = 0;
+			virtual size_t load_from(void* from, size_t fromLen, data_storage_type& to) = 0;
+			virtual size_t load_to(void* to, size_t bufSize, data_storage_type& from) = 0;
+		};
+
+		template<typename T, bool IS_NUMERIC = false>
+		class static_implementor : public implementor_base
+		{
+		public:
+			virtual void init(data_storage_type& ds) override
+			{
+				ds = new T();
+			}
+			virtual bool is_numeric() const override
+			{
+				return IS_NUMERIC;
+			}
+			virtual bool is_dynamic() const override
+			{
+				return false;
+			}
+			virtual size_t load_from(void* from, size_t fromLen, data_storage_type& to) override
+			{
+				require_at_least(fromLen, sizeof(T));
+				T& v = *static_cast<T*>(from);
+				to = new T(v);
+				return sizeof(T);
+			}
+			virtual size_t load_to(void* to, size_t bufSize, data_storage_type& from) override
+			{
+				require_at_least(bufSize, sizeof(T));
+				*static_cast<T*>(to) = *from.cast_as<T>();
+				return sizeof(T);
+			}
+		};
+
+		using int8_implementor = static_implementor<int8_t, true>;
+		using uint8_implementor = static_implementor<uint8_t, true>;
+		using int16_implementor = static_implementor<int16_t, true>;
+		using uint16_implementor = static_implementor<uint16_t, true>;
+		using int32_implementor = static_implementor<int32_t, true>;
+		using uint32_implementor = static_implementor<uint32_t, true>;
+
+		using float_implementor = static_implementor<float, true>;
+		using double_implementor = static_implementor<double, true>;
+
+		class blob_wrapper
+		{
+		public:
+			blob_wrapper(void* data);
+			uint32_t get_size() const;
+			void* get_data() const;
+			void copy_to(void* mem);
+		private:
+			void* data;
+		};
+
+		class none_implementor : public implementor_base
+		{
+		public:
+
+			virtual void init(data_storage_type& ds) override;
+			virtual bool is_numeric() const override;
+			virtual bool is_dynamic() const override;
+			virtual size_t load_from(void* from, size_t fromLen, data_storage_type& to) override;
+			virtual size_t load_to(void* to, size_t bufSize, data_storage_type& from) override;
+		};
+
+		class blob_implementor : public implementor_base
+		{
+		public:
+
+			virtual void init(data_storage_type& ds) override;
+			virtual bool is_numeric() const override;
+			virtual bool is_dynamic() const override;
+			virtual size_t load_from(void* from, size_t fromLen, data_storage_type& to) override;
+			virtual size_t load_to(void* to, size_t bufSize, data_storage_type& from) override;
+		};
+
+		using string_implementor = blob_implementor;
+
+		class bigint_implementor : public implementor_base 
+		{
+		public:
+
+			virtual void init(data_storage_type& ds) override;
+			virtual bool is_numeric() const override;
+			virtual bool is_dynamic() const override;
+			virtual size_t load_from(void* from, size_t fromLen, data_storage_type& to) override;
+			virtual size_t load_to(void* to, size_t bufSize, data_storage_type& from) override;
+		};
+	}
+
+	const std::map<dtype_t, impl::implementor_base*>& implementors();
+
+	inline bool has_type(dtype_t dt)
+	{
+		return implementors().find(dt) != implementors().end();
+	}
+
+	inline boost::optional<impl::implementor_base&> get_implementor(dtype_t dt)
+	{
+		auto it = implementors().find(dt);
+		return it == implementors().end() ? boost::none : boost::optional<impl::implementor_base&>(*it->second);
 	}
 }
 

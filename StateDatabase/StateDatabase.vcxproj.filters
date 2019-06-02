@@ -90,9 +90,6 @@
     <ClInclude Include="net_utils.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="record.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
     <ClInclude Include="segment_container.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
@@ -153,6 +150,15 @@
     <ClInclude Include="dtypes.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
+    <ClInclude Include="object.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="memory_ptr.h">
+      <Filter>Файлы заголовков\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="empty_handler.h">
+      <Filter>Файлы заголовков\net</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -197,7 +203,13 @@
     <ClCompile Include="messages_dispatcher.cpp">
       <Filter>Исходные файлы\net</Filter>
     </ClCompile>
-    <ClCompile Include="record.cpp">
+    <ClCompile Include="dtypes.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="object.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="memory_ptr.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
   </ItemGroup>

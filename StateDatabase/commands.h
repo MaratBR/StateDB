@@ -33,7 +33,6 @@ _END_STATEDB
 #	define CMD_ID_BITS (16 - CMD_TYPE_BITS)
 
 #	define _CMDTYPE_MASK _STATEDB commands::create_mask(CMD_TYPE_BITS) << CMD_ID_BITS  // Mask for first
-static_assert(_CMDTYPE_MASK == (uint16_t)0b1110000000000000, "asd");
 
 #	define MAKE_CMD(type, innerCode) _CMD(((type) << CMD_ID_BITS) | (innerCode))
 #	define GET_CMD_TYPE(cmd) (((cmd) & _CMDTYPE_MASK) >> CMD_ID_BITS)

@@ -13,10 +13,34 @@ public:
 
 	struct handlers
 	{
-#define _MSG_HANDLER(name) struct name { void operator()(tcp_connection& conn); }
 
-		_MSG_HANDLER(ping_handler);
-		_MSG_HANDLER(get_handler);
+		// Handler that loads message body before calling inner handler
+		struct process_message
+		{
+			process_message(
+				boost::function<void(tcp_connection&, asio_server&, processed_message&)>
+			);
+
+			void operator()(tcp_connection&, asio_server&, message_preamble&);
+
+			boost::function<void(tcp_connection&, asio_server&, processed_message&)> _handler;
+		};
+
+		// Responds with PONG message
+		struct ping_handler
+		{
+			void operator()(tcp_connection&, asio_server&, message_preamble&);
+		};
+
+		struct get_handler
+		{
+			void operator()(tcp_connection&, asio_server&, message_preamble&);
+		};
+
+		struct set_handler
+		{
+			void operator()(tcp_connection&, asio_server&, message_preamble&);
+		};
 	};
 
 	asio_server(boost::asio::ip::tcp::endpoint ep);
@@ -65,7 +89,7 @@ private:
 	std::map<std::string, tcp_connection::pointer> connections;
 	boost::asio::deadline_timer stats_timer;
 	std::chrono::system_clock::time_point start_time;
-	_STATEDB_UTILS dispatcher<commands::command_t, tcp_connection&> dispatcher_;
+	_STATEDB_UTILS dispatcher<commands::command_t, tcp_connection&, asio_server&, message_preamble&> dispatcher_;
 };
 
 _END_STATEDB_NET
