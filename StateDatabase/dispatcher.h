@@ -22,6 +22,12 @@ public:
 		handlers[id] = TFunctorHandler();
 	}
 
+	template<typename TFunctorHandler>
+	void register_handler(TId id, TFunctorHandler hndl)
+	{
+		handlers[id] = hndl;
+	}
+
 	void clear(TId id)
 	{
 		handlers.erase(id);

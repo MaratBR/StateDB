@@ -21,6 +21,15 @@ public:
 				boost::function<void(tcp_connection&, asio_server&, processed_message&)>
 			);
 
+			static void handle_proccessed_data(
+				const BOOST_ERR_CODE& ec,
+				size_t bt, 
+				process_message& pmsg,
+				tcp_connection& conn, 
+				asio_server& server,
+				message_preamble& msgp
+			);
+
 			void operator()(tcp_connection&, asio_server&, message_preamble&);
 
 			boost::function<void(tcp_connection&, asio_server&, processed_message&)> _handler;
@@ -34,12 +43,7 @@ public:
 
 		struct get_handler
 		{
-			void operator()(tcp_connection&, asio_server&, message_preamble&);
-		};
-
-		struct set_handler
-		{
-			void operator()(tcp_connection&, asio_server&, message_preamble&);
+			void operator()(tcp_connection&, asio_server&, processed_message&);
 		};
 	};
 

@@ -104,6 +104,8 @@ public:
 	void close(BOOST_ERR_CODE ec);
 
 	void init();
+	_STATEDB_UTILS dynamic_storage& get_read_buffer();
+	boost::posix_time::milliseconds get_timeout() const;
 
 	std::string get_id() const;
 

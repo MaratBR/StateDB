@@ -74,6 +74,16 @@ void tcp_connection::init()
 	logger = logging::get_connection_logger(address_string);
 }
 
+_STATEDB_UTILS dynamic_storage& tcp_connection::get_read_buffer()
+{
+	return dynamic_storage_;
+}
+
+boost::posix_time::milliseconds tcp_connection::get_timeout() const
+{
+	return TIMEOUT;
+}
+
 
 // Returns ID (address string "IP:PORT" i.e. 123.7.45.9:12345) of the connection
 std::string tcp_connection::get_id() const
@@ -225,6 +235,13 @@ void tcp_connection::handle_data(
 	read_in_progress = false;
 	// Call next handler
 	next(ec, bt);
+
+	if (!pending_read_operations.empty())
+	{
+		auto op = pending_read_operations.front();
+		pending_read_operations.pop();
+		op->perform(*this);
+	}
 }
 
 // Starts async. reading operation 
@@ -251,16 +268,17 @@ void tcp_connection::handle_message(const BOOST_ERR_CODE& ec, size_t bt)
 	if (!msg.valid())
 	{
 		logger->warn("Received invalid message. ID: {}, PREAMBLE: {} {}", msg.id, msg._PREAMBLE[0], msg._PREAMBLE[1]);
+		dynamic_storage_.deallocate();
 	}
 	else
 	{
 		logger->debug("Received message ID: {}", msg.id);
 
 		// Call signal
+		dynamic_storage_.deallocate(); // IMPORTANT Deallocate BEFORE calling signal
 		on_new_message_(*this, msg);
 	}
 
-	dynamic_storage_.deallocate();
 	start_read_message();
 }
 
@@ -295,6 +313,13 @@ void tcp_connection::handle_write_operation(
 	deadline_write_timer_.cancel();
 	// Call next handler
 	next(ec, bt);
+
+	if (!pending_write_operations.empty())
+	{
+		auto op = pending_write_operations.front();
+		pending_write_operations.pop();
+		op->perform(*this);
+	}
 }
 
 tcp_connection::tcp_connection(boost::asio::io_context& io_context_)

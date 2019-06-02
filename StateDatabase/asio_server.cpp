@@ -75,7 +75,8 @@ void asio_server::handle_connection_remove(std::string connId)
 void asio_server::init_dispatcher()
 {
 	logger_->debug("Initializing dispatcher...");
-	//dispatcher_.register_handler<>();
+	dispatcher_.register_handler<handlers::ping_handler>(commands::request_ping);
+	dispatcher_.register_handler(commands::request_get, handlers::process_message(handlers::get_handler()));
 }
 
 void asio_server::start_stats_task()
@@ -110,10 +111,35 @@ asio_server::handlers::process_message::process_message(boost::function<void(tcp
 {
 }
 
-void asio_server::handlers::process_message::operator()(tcp_connection& conn, asio_server&, message_preamble& msgp)
+void asio_server::handlers::process_message::handle_proccessed_data(
+	const BOOST_ERR_CODE&, 
+	size_t, 
+	process_message& pmsg, 
+	tcp_connection& conn, 
+	asio_server& server,
+	message_preamble& msgp
+)
+{
+	processed_message msg(msgp.id, msgp.size, conn.get_read_buffer().get_binary());
+	pmsg._handler(conn, server, msg);
+}
+
+void asio_server::handlers::process_message::operator()(tcp_connection& conn, asio_server& server, message_preamble& msgp)
 {
 	// Load message body
-
+	conn.async_read_raw(
+		msgp.size,
+		boost::bind(
+			&process_message::handle_proccessed_data, 
+			boost::asio::placeholders::error,
+			boost::asio::placeholders::bytes_transferred,
+			*this,
+			boost::ref(conn),
+			boost::ref(server),
+			msgp
+		),
+		conn.get_timeout()
+		);
 }
 
 void asio_server::handlers::ping_handler::operator()(tcp_connection& conn, asio_server&, message_preamble&)
@@ -122,16 +148,10 @@ void asio_server::handlers::ping_handler::operator()(tcp_connection& conn, asio_
 	conn.async_write_message<make_pong_message>(pong, [](const BOOST_ERR_CODE&, size_t) {});
 }
 
-void asio_server::handlers::get_handler::operator()(tcp_connection& conn, asio_server& server, message_preamble& msgp)
+void asio_server::handlers::get_handler::operator()(tcp_connection& conn, asio_server& server, processed_message& msgp)
 {
-	
+	int a = 42;
 }
-
-void asio_server::handlers::set_handler::operator()(tcp_connection&, asio_server&, message_preamble&)
-{
-}
-
-
 
 
 

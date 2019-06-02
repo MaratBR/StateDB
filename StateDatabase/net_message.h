@@ -47,11 +47,11 @@ using make_pong_message = static_simple_message<commands::response_pong>;
 
 struct processed_message
 {
-	processed_message(const commands::command_t id, const uint32_t size, std::shared_ptr<void> buffer);
+	processed_message(const commands::command_t id, const uint32_t size, void* buffer);
 
 	const commands::command_t id;
 	const uint32_t size;
-	const std::shared_ptr<void> buffer;
+	void* buffer;
 };
 
 _END_STATEDB_NET
