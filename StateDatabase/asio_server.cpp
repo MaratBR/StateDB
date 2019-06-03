@@ -118,7 +118,7 @@ void asio_server::handlers::process_message::handle_proccessed_data(
 	process_message& pmsg, 
 	tcp_connection& conn, 
 	asio_server& server,
-	message_preamble& msgp
+	message_preamble msgp
 )
 {
 	processed_message msg(msgp.id, msgp.size, conn.get_read_buffer().get_binary());
@@ -137,7 +137,7 @@ void asio_server::handlers::process_message::operator()(tcp_connection& conn, as
 			boost::ref(*this),
 			boost::ref(conn),
 			boost::ref(server),
-			boost::ref(msgp)
+			msgp
 		),
 		conn.get_timeout()
 		);
@@ -152,7 +152,9 @@ void asio_server::handlers::get_handler::operator()(tcp_connection& conn, asio_s
 {
 	char* key = msgp.as_cstr();
 	size_t keyHash = make_hash(key);
-	server.logger_->debug("Received GET for {}, {}", keyHash, key);
+	server.logger_->debug("Received GET from {}, {}", keyHash, key);
+
+
 }
 
 _END_STATEDB_NET

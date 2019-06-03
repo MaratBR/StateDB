@@ -27,7 +27,7 @@ public:
 				process_message& pmsg,
 				tcp_connection& conn, 
 				asio_server& server,
-				message_preamble& msgp
+				message_preamble msgp
 			);
 
 			void operator()(tcp_connection&, asio_server&, message_preamble&);
