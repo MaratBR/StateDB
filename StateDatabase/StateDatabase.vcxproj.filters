@@ -141,9 +141,6 @@
     <ClInclude Include="format_utils.h">
       <Filter>Файлы заголовков\utils</Filter>
     </ClInclude>
-    <ClInclude Include="dispatcher.h">
-      <Filter>Исходные файлы\utils</Filter>
-    </ClInclude>
     <ClInclude Include="dtypes.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
@@ -155,6 +152,9 @@
     </ClInclude>
     <ClInclude Include="empty_handler.h">
       <Filter>Файлы заголовков\net</Filter>
+    </ClInclude>
+    <ClInclude Include="dispatcher.h">
+      <Filter>Файлы заголовков\utils</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

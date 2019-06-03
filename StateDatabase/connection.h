@@ -222,7 +222,7 @@ public:
 		T& val
 	)
 	{
-		async_read_message<T>(val, TIMEOUT);
+		async_write_message<T>(val, TIMEOUT, true);
 	}
 
 	// Writes message of the given type to the socket.
@@ -237,7 +237,7 @@ public:
 	inline void async_write_message()
 	{
 		T val;
-		async_read_message<T>(val);
+		async_write_message<T>(val);
 	}
 
 	void async_read_raw(

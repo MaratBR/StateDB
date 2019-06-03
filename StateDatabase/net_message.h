@@ -50,8 +50,11 @@ struct processed_message
 	processed_message(const commands::command_t id, const uint32_t size, void* buffer);
 
 	const commands::command_t id;
-	const uint32_t size;
+	uint32_t size;
 	void* buffer;
+
+	char* get_cstr();
+	char* as_cstr();
 };
 
 _END_STATEDB_NET

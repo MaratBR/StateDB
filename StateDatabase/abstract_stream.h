@@ -36,6 +36,7 @@ public:
 	virtual seek_mode_e get_seek_modeg() const { return seek_mode_e::non_seekable; }
 };
 
+
 class istream_wrp : public abstract_istream
 {
 public:

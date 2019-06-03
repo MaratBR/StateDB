@@ -4,6 +4,7 @@
 
 _BEGIN_STATEDB_UTILS
 
+// UNUSED, DEPRECATED?
 class asio_base_stream
 {
 public:
@@ -14,6 +15,7 @@ protected:
 	std::streampos pos = 0;
 };
 
+// UNUSED, DEPRECATED?
 class asio_istream : public asio_base_stream, public abstract_istream
 {
 public:
@@ -26,6 +28,7 @@ public:
 	virtual seek_mode_e get_seek_modeg() const override { return utils::seek_mode_e::forward_seekable; }
 };
 
+// UNUSED, DEPRECATED?
 class asio_ostream : public asio_base_stream, public abstract_ostream
 {
 public:
@@ -38,6 +41,7 @@ public:
 	virtual seek_mode_e get_seek_modep() const override { return seek_mode_e::forward_seekable; }
 };
 
+// UNUSED, DEPRECATED?
 class asio_buf_ostream : public abstract_ostream, public asio_base_stream
 {
 public:

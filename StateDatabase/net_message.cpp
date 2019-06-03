@@ -26,5 +26,32 @@ processed_message::processed_message(const commands::command_t id, const uint32_
 {
 }
 
+char* processed_message::get_cstr()
+{
+	char* str = reinterpret_cast<char*>(buffer);
+
+	size_t len = 0;
+	while (len < size && str[len] != '\0')
+	{
+		len++;
+	}
+
+	if (len == size)
+	{
+		str[len - 1] = '\0';
+		len--;
+	}
+
+	size -= len + 1;
+	return str;
+}
+
+char* processed_message::as_cstr()
+{
+	char* ch = reinterpret_cast<char*>(buffer);
+	ch[size - 1] = '\0';
+	return ch;
+}
+
 
 _END_STATEDB_NET

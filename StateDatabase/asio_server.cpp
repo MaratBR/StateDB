@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "asio_server.h"
 #include "format_utils.h"
+#include "hash.h"
 
 _BEGIN_STATEDB_NET
 
@@ -133,10 +134,10 @@ void asio_server::handlers::process_message::operator()(tcp_connection& conn, as
 			&process_message::handle_proccessed_data, 
 			boost::asio::placeholders::error,
 			boost::asio::placeholders::bytes_transferred,
-			*this,
+			boost::ref(*this),
 			boost::ref(conn),
 			boost::ref(server),
-			msgp
+			boost::ref(msgp)
 		),
 		conn.get_timeout()
 		);
@@ -144,16 +145,14 @@ void asio_server::handlers::process_message::operator()(tcp_connection& conn, as
 
 void asio_server::handlers::ping_handler::operator()(tcp_connection& conn, asio_server&, message_preamble&)
 {
-	make_pong_message pong;
-	conn.async_write_message<make_pong_message>(pong, [](const BOOST_ERR_CODE&, size_t) {});
+	conn.async_write_message<make_pong_message>();
 }
 
 void asio_server::handlers::get_handler::operator()(tcp_connection& conn, asio_server& server, processed_message& msgp)
 {
-	int a = 42;
+	char* key = msgp.as_cstr();
+	size_t keyHash = make_hash(key);
+	server.logger_->debug("Received GET for {}, {}", keyHash, key);
 }
-
-
-
 
 _END_STATEDB_NET
