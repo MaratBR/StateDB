@@ -40,6 +40,7 @@ public:
 	size_t write_to(void* to, size_t bufSize);
 	size_t load_from(void* from, size_t bufSize);
 	std::string& get_key();
+	void add(int32_t );
 private:
 	dtypes::data_storage_type ds;
 	dtypes::dtype_t dtype;

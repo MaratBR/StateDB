@@ -94,7 +94,7 @@ public:
 		data.resize(s);
 	}
 
-	void allocate_binary(size_t s, void* memory)
+	void allocate_binary(size_t s, const void* memory)
 	{
 		allocate_binary(s);
 		std::memcpy(data.data(), memory, s);

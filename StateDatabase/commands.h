@@ -25,6 +25,11 @@ namespace commands {
 	constexpr command_t request_ping = 3;
 	constexpr command_t request_set = 4;
 	constexpr command_t request_get_all = 5;
+
+	// NOT IMPLEMENTED
+	constexpr command_t request_inc = 6;
+	constexpr command_t request_dec = 7;
+	constexpr command_t request_clear_all = 8;
 }
 
 _END_STATEDB

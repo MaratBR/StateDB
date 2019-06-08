@@ -46,5 +46,16 @@ void db::iterate(boost::function<void(size_t&, db_object&)> fn)
 	inner->tree->iterate(fn);
 }
 
+db::numeric_operation_result db::add(size_t keyHash, int32_t val)
+{
+	boost::optional<db_object*> obj = get_object(keyHash);
+	if (!obj.has_value())
+		return db::NumericOpNotFound;
+	if (!obj.value()->is_numeric())
+		return db::NumericOpNotNumeric;
+	obj.value().
+	return db::NumericOpDone;
+}
+
 
 _END_STATEDB

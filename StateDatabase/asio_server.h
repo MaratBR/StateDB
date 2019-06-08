@@ -65,6 +65,21 @@ public:
 		{
 			void operator()(tcp_connection&, asio_server&, message_preamble&);
 		};
+
+		struct clear_all
+		{
+			void operator()(tcp_connection&, asio_server&, message_preamble&);
+		};
+
+		struct inc_handler
+		{
+			void operator()(tcp_connection&, asio_server&, message_preamble&);
+		};
+
+		struct dec_handler
+		{
+			void operator()(tcp_connection&, asio_server&, message_preamble&);
+		};
 	};
 
 	asio_server(boost::asio::ip::tcp::endpoint ep, db& db_);

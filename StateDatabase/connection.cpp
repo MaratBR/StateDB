@@ -5,7 +5,7 @@
 _BEGIN_STATEDB_NET
 
 tcp_connection::pending_write_raw_operation::pending_write_raw_operation(
-	void* memory,
+	const void* memory,
 	size_t size,
 	boost::function<void(const BOOST_ERR_CODE&, size_t)> handler_,
 	bool required_,
@@ -102,7 +102,7 @@ void tcp_connection::on_close(boost::signals2::signal<void(tcp_connection&)>::sl
 	on_closed_.connect(slot);
 }
 
-void tcp_connection::async_write_raw(void* memory, size_t amount, boost::function<void(const BOOST_ERR_CODE&, size_t)> h, boost::posix_time::milliseconds timeout, bool required)
+void tcp_connection::async_write_raw(const void* memory, size_t amount, boost::function<void(const BOOST_ERR_CODE&, size_t)> h, boost::posix_time::milliseconds timeout, bool required)
 {
 	if (amount == 0) return;
 	if (write_in_progress)

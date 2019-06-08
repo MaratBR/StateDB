@@ -74,7 +74,7 @@ public:
 	struct pending_write_raw_operation : public pending_operation_base
 	{
 		pending_write_raw_operation(
-			void* memory, 
+			const void* memory, 
 			size_t size,
 			boost::function<void(const BOOST_ERR_CODE&, size_t)> handler_,
 			bool required_,
@@ -83,7 +83,7 @@ public:
 
 		virtual void perform(tcp_connection& ds) override;
 		size_t size;
-		void* memory;
+		const void* memory;
 	};
 
 	struct pending_read_raw_operation : public pending_operation_base
@@ -147,7 +147,7 @@ public:
 		close();
 	}
 
-	// Asynchronously writes data to the socket
+	// Asynchronously writes data to the socket. It CAN but not necessarily WILL copy data, so you MUST ensure that data will be available.
 	template<typename T>
 	void async_write_message(
 		T& val,
@@ -162,7 +162,7 @@ public:
 		{
 			logger->debug("Write operation for {} delayed due to another write operation being processed", typename_);
 			pending_write_operations.push(
-				std::shared_ptr<pending_operation_base>(new pending_read_operation<T>(h, required, timeout))
+				std::shared_ptr<pending_operation_base>(new pending_write_operation<T>(val, h, required, timeout))
 			);
 			return;
 		}
@@ -192,8 +192,16 @@ public:
 		}
 	}
 
+	inline void async_write_error(const char* message)
+	{
+		make_error_preamble err;
+		err.size = strlen(message) + 1;
+		async_write_message(err);
+		async_write_raw(static_cast<const void*>(message), err.size, STATEDB_ASIO_EMPTY_HANDLER, TIMEOUT);
+	}
+
 	void async_write_raw(
-		void* memory,
+		const void* memory,
 		size_t amount,
 		boost::function<void(const BOOST_ERR_CODE&, size_t)> h,
 		boost::posix_time::milliseconds timeout,

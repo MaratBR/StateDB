@@ -1,6 +1,5 @@
 #pragma once
 #include "pch.h"
-
 #include "list.h"
 #include "bpt_base.h"
 
@@ -59,9 +58,14 @@ public:
 		
 		while (l != nullptr)
 		{
-			l->m_next->iterate(iterator);
+			l->m_list.iterate(iterator);
 			l = l->m_next;
 		}
+	}
+
+	void set_next(leaf<TKey, TVal, ORDER>* next)
+	{
+		m_next = next;
 	}
 			
 private:

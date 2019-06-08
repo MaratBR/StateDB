@@ -16,10 +16,20 @@ public:
 	bpt_internal(bpt_base<TKey, TVal, ORDER>* l)
 	{
 		m_size = 1;
-		m_lesser = new leaf<TKey, TVal, ORDER>();
 		m_root = new list_node_type(l->primary_key(), l);
+		leaf<TKey, TVal, ORDER>* lesserLeaf = new leaf<TKey, TVal, ORDER>();
+
+		if (l->is_leaf())
+		{
+			lesserLeaf->set_next(
+				dynamic_cast<leaf<TKey, TVal, ORDER>*>(l)
+			);
+		}
+
+		m_lesser = lesserLeaf;
 	}
 
+	// Returns the pointer to the value with given key or nullptr if key is no present in the tree
 	TVal* get_val_ptr(TKey key) override
 	{
 		return get_child_ge(key)->get_val_ptr(key);
@@ -97,6 +107,7 @@ public:
 		return m_size > max_size;
 	}
 
+	// Iterates over the values inside the children of the node
 	virtual void iterate(boost::function<void(TKey&, TVal&)> fn) override
 	{
 		m_lesser->iterate(fn);
@@ -201,7 +212,7 @@ private:
 	}
 
 	// Pointer to the child node containing all key-value pairs where key lesser than root's first key
-	// Must be set in constructor. The only child that can be empty.
+	// Must be set in constructor.
 	bpt_base<TKey, TVal, ORDER>* m_lesser; // REQUIRED
 
 	// Split internal node into two
@@ -213,10 +224,7 @@ private:
 		newRoot->m_lesser = this;
 
 		// Create right node
-		bpt_internal* newInternal = new bpt_internal();
-
-		// Init m_lesser and other
-				
+		bpt_internal* newInternal = new bpt_internal();				
 
 		// Move middle node
 		size_t middle = m_size / 2; // index of middle node
@@ -231,7 +239,6 @@ private:
 
 		newInternal->m_size = m_size - middle - 1;
 		m_size = middle;
-
 		return newRoot;
 	}
 

@@ -45,6 +45,8 @@ using make_key_deleted_preamble = static_simple_message<commands::response_key_d
 
 using make_key_updated_preamble = static_simple_message<commands::response_key_update>;
 
+using make_error_preamble = static_simple_message<commands::response_error>;
+
 #pragma pack(pop)
 
 

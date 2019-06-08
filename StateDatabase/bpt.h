@@ -17,7 +17,8 @@ public:
 
 	void iterate(boost::function<void(TKey&, TVal&)> fn)
 	{
-		m_root->iterate(fn);
+		if (m_root)
+			m_root->iterate(fn);
 	}
 
 	bool delete_key(TKey key)

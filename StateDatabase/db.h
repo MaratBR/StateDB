@@ -73,6 +73,18 @@ public:
 	bool delete_key(db_key_type keyHash);
 
 	void iterate(boost::function<void(size_t&, db_object&)> fn);
+
+	enum numeric_operation_result
+	{
+		NumericOpDone,
+		NumericOpNotFound,
+		NumericOpNotNumeric
+	};
+
+	numeric_operation_result add(size_t keyHash, int32_t val);
+	inline numeric_operation_result inc(size_t keyHash) { add(keyHash, 1); }
+	inline numeric_operation_result dec(size_t keyHash) { add(keyHash, -1); }
+
 private:
 	void reset_inner()
 	{

@@ -86,6 +86,7 @@ void asio_server::init_dispatcher()
 	dispatcher_.register_handler<handlers::ping_handler>(commands::request_ping);
 	dispatcher_.register_handler(commands::request_get, handlers::process_message(handlers::get_handler()));
 	dispatcher_.register_handler(commands::request_set, handlers::process_message(handlers::set_handler()));
+	dispatcher_.register_handler<handlers::get_all_handler>(commands::request_get_all);
 }
 
 void asio_server::start_stats_task()
@@ -247,7 +248,7 @@ void asio_server::handlers::set_handler::operator()(tcp_connection& conn, asio_s
 	if (pmsg.size - keySize < 1 + sizeof(dtypes::dtype_t))
 	{
 		// Not enought space for actual data
-		// TODO Send error
+		conn.async_write_error("You have sent not enough data for DTYPE");
 		return;
 	}
 
@@ -258,7 +259,7 @@ void asio_server::handlers::set_handler::operator()(tcp_connection& conn, asio_s
 	if (!dtypes::has_type(dtype))
 	{
 		// Unknown type
-		// TODO Send error
+		conn.async_write_error("Unknown type");
 		return;
 	}
 
@@ -273,8 +274,8 @@ void asio_server::handlers::set_handler::operator()(tcp_connection& conn, asio_s
 	}
 	catch (dtypes::unsufficient_space exc)
 	{
-		// Not enought space for actual data
-		// TODO Send error
+		// Not enough space for actual data
+		conn.async_write_error("Not enough space for VALUE");
 		return;
 	}
 	
@@ -303,7 +304,7 @@ void asio_server::handlers::delete_handler::operator()(tcp_connection& conn, asi
 void asio_server::handlers::get_all_handler::operator()(tcp_connection& conn, asio_server& server, message_preamble&)
 {
 	server.db_.iterate(
-		[&conn, &server](size_t&, db_object& obj) 
+		[&conn, &server](size_t&, db_object & obj)
 		{
 			get_handler::send_value(conn, server, obj.get_key().data());
 		}
