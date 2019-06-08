@@ -184,6 +184,7 @@
     <ClInclude Include="dispatcher.h" />
     <ClInclude Include="dtypes.h" />
     <ClInclude Include="dtypes_collection.h" />
+    <ClInclude Include="dtypes_utils.h" />
     <ClInclude Include="dtype_decl.h" />
     <ClInclude Include="dynamic_storage.h" />
     <ClInclude Include="empty_handler.h" />

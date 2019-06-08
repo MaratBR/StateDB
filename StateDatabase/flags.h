@@ -10,7 +10,7 @@ struct flags_t
 	byte_t data[bytes_count];
 
 	template<size_t index>
-	bool get()
+	bool get() const
 	{
 		static_assert(index < count, "Index is out of range");
 		size_t byteIndex = index / 8;

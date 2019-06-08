@@ -53,6 +53,7 @@ namespace dtypes
 			virtual bool is_dynamic() const = 0;
 			virtual size_t load_from(void* from, size_t fromLen, data_storage_type& to) = 0;
 			virtual size_t load_to(void* to, size_t bufSize, data_storage_type& from) = 0;
+			virtual size_t get_size(data_storage_type& s) = 0;
 		};
 
 		template<typename T, bool IS_NUMERIC = false>
@@ -82,6 +83,10 @@ namespace dtypes
 			{
 				require_at_least(bufSize, sizeof(T));
 				*static_cast<T*>(to) = *from.cast_as<T>();
+				return sizeof(T);
+			}
+			virtual size_t get_size(data_storage_type&) override
+			{
 				return sizeof(T);
 			}
 		};
@@ -116,6 +121,7 @@ namespace dtypes
 			virtual bool is_dynamic() const override;
 			virtual size_t load_from(void* from, size_t fromLen, data_storage_type& to) override;
 			virtual size_t load_to(void* to, size_t bufSize, data_storage_type& from) override;
+			virtual size_t get_size(data_storage_type& ds) override;
 		};
 
 		class blob_implementor : public implementor_base
@@ -127,9 +133,19 @@ namespace dtypes
 			virtual bool is_dynamic() const override;
 			virtual size_t load_from(void* from, size_t fromLen, data_storage_type& to) override;
 			virtual size_t load_to(void* to, size_t bufSize, data_storage_type& from) override;
+			virtual size_t get_size(data_storage_type& ds) override;
 		};
 
-		using string_implementor = blob_implementor;
+		class string_implementor : public implementor_base
+		{
+		public:
+			virtual void init(data_storage_type& ds) override;
+			virtual bool is_numeric() const override;
+			virtual bool is_dynamic() const override;
+			virtual size_t load_from(void* from, size_t fromLen, data_storage_type& to) override;
+			virtual size_t load_to(void* to, size_t bufSize, data_storage_type& from) override;
+			virtual size_t get_size(data_storage_type& s) override;
+		};
 
 		class bigint_implementor : public implementor_base 
 		{
@@ -140,6 +156,7 @@ namespace dtypes
 			virtual bool is_dynamic() const override;
 			virtual size_t load_from(void* from, size_t fromLen, data_storage_type& to) override;
 			virtual size_t load_to(void* to, size_t bufSize, data_storage_type& from) override;
+			virtual size_t get_size(data_storage_type& s) override;
 		};
 	}
 

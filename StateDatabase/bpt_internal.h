@@ -97,35 +97,10 @@ public:
 		return m_size > max_size;
 	}
 
-#ifdef DEBUG
-	void debug_print(size_t depth = 0) override
+	virtual void iterate(boost::function<void(TKey&, TVal&)> fn) override
 	{
-		print_depth(depth);
-		std::cout << "<internal size=" << size() << ">" << std::endl;
-		print_depth(depth + 1);
-		std::cout << "<m_lesser>" << std::endl;
-		m_lesser->debug_print(depth + 2);
-		print_depth(depth + 1);
-		std::cout << "</m_lesser>" << std::endl;
-
-		int i = 0;
-		auto* n = m_root;
-
-		while (n != nullptr)
-		{
-			print_depth(depth + 1);
-			std::cout << "<node" << i << " key=" << n->m_pair.key << ">" << std::endl;
-			n->m_pair.val->debug_print(depth + 2);
-			print_depth(depth + 1);
-			std::cout << "</node" << i << ">" << std::endl;
-			i++;
-			n = n->m_next;
-		}
-
-		print_depth(depth);
-		std::cout << "</internal>" << std::endl;
+		m_lesser->iterate(fn);
 	}
-#endif
 
 private:
 	bpt_internal() {} // Empty constructor (thx captain obvious thank you very much)

@@ -27,10 +27,6 @@ struct db_inner : public _STATEDB_UTILS stream_rw<db_inner>
 		}
 	}
 
-#ifdef DEBUG
-	void debug_print();
-#endif
-
 	virtual void write_to(_STATEDB_UTILS abstract_ostream& o) override;
 	virtual void read_from(_STATEDB_UTILS abstract_istream& i) override;
 	virtual size_t get_size() const override;
@@ -71,7 +67,14 @@ public:
 			throw db_exception(ERR_DESCRIPTION_INVALID_MAGIC);
 	}
 
-public:
+	boost::optional<db_object*> get_object(size_t keyHash);
+
+	void set_value(const char* key, dtypes::dtype_t dt, void* src, size_t len);
+
+	bool delete_key(db_key_type keyHash);
+
+	void iterate(boost::function<void(size_t&, db_object&)> fn);
+private:
 	void reset_inner()
 	{
 		if (inner)
@@ -90,6 +93,7 @@ public:
 		reset_inner();
 
 		inner->header.set_defaults();
+		inner->tree = new _STATEDB_BPT tree<size_t, db_object, 6>();
 		spdlog::info("DB object has been reseted");
 	}
 

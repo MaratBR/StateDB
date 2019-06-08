@@ -148,20 +148,16 @@ public:
 
 	TKey get_root_key() const { return m_root->m_pair.key; }
 
-#ifdef DEBUG
-	void debug_print(size_t depth = 0)
+	void iterate(boost::function<void(TKey&, TVal&)> fn)
 	{
-		print_depth(depth);
-		std::cout << "<list>";
-		node_type* n = this->m_root;
-		while (n != nullptr)
+		node_type* node = m_root;
+
+		while (node != nullptr)
 		{
-			std::cout << n->m_pair.key << '=' << n->m_pair.val << ' ';
-			n = n->m_next;
+			fn(node->m_pair.key, node->m_pair.val);
+			node = node->m_next;
 		}
-		std::cout << "</list>\n";
 	}
-#endif
 private:
 	node_type* m_root = nullptr;
 	size_t m_size;

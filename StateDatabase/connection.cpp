@@ -5,19 +5,19 @@
 _BEGIN_STATEDB_NET
 
 tcp_connection::pending_write_raw_operation::pending_write_raw_operation(
-	void* memory, 
-	size_t size, 
-	boost::function<void(const BOOST_ERR_CODE&, size_t)> handler_, 
-	bool required_, 
+	void* memory,
+	size_t size,
+	boost::function<void(const BOOST_ERR_CODE&, size_t)> handler_,
+	bool required_,
 	boost::posix_time::milliseconds timeout_
 )
 	: tcp_connection::pending_operation_base(handler_, required_, timeout_), size(size), memory(memory)
 {
 }
 
-void tcp_connection::pending_write_raw_operation::perform(tcp_connection& ds)
+void tcp_connection::pending_write_raw_operation::perform(tcp_connection& conn)
 {
-	
+	conn.async_write_raw(memory, size, handler, timeout, required);
 }
 
 tcp_connection::pending_read_raw_operation::pending_read_raw_operation(
@@ -30,8 +30,9 @@ tcp_connection::pending_read_raw_operation::pending_read_raw_operation(
 {
 }
 
-void tcp_connection::pending_read_raw_operation::perform(tcp_connection& ds)
+void tcp_connection::pending_read_raw_operation::perform(tcp_connection& conn)
 {
+	conn.async_read_raw(size, handler, timeout, required);
 }
 
 ASIO_SOCKET& tcp_connection::socket()
@@ -45,7 +46,7 @@ void tcp_connection::start()
 	async_read_message<hello_message_static>(
 		boost::bind(&tcp_connection::received_hello, this, boost::asio::placeholders::error, boost::asio::placeholders::bytes_transferred),
 		TIMEOUT
-	);
+		);
 }
 
 void tcp_connection::close()
@@ -116,7 +117,7 @@ void tcp_connection::async_write_raw(void* memory, size_t amount, boost::functio
 	std::shared_ptr<bool> operation_done(new bool(false));
 
 	logger->debug("{0} bytes reserved for write operation for binary", amount);
-	dynamic_write_storage_.allocate_binary(amount);
+	dynamic_write_storage_.allocate_binary(amount, memory);
 
 	socket_.async_write_some(
 		dynamic_write_storage_.get_asio_buffer(),
@@ -178,7 +179,7 @@ void tcp_connection::received_hello(const BOOST_ERR_CODE& ec, size_t br)
 	hello_message_static& hello = dynamic_storage_.get<hello_message_static>();
 	if (!hello.valid(STATEDB_PROTOCOL_VERSION))
 	{
-		logger->warn("Invalid HELLO message: '{}' '{}' '{}' '{}' '{}', protocol byte: {}", 
+		logger->warn("Invalid HELLO message: '{}' '{}' '{}' '{}' '{}', protocol byte: {}",
 			hello._HELLO[0], hello._HELLO[1], hello._HELLO[2], hello._HELLO[3], hello._HELLO[4], hello._HELLO[5],
 			(uint16_t)(hello.protocol_version));
 		close();
@@ -196,8 +197,8 @@ void tcp_connection::handle_timeout_expiration(const BOOST_ERR_CODE& ec, std::sh
 {
 	if (*operationIsDone)
 		return;
-	logger->info(L"Timeout expired with error code: {} ({})", 
-		ec.value(), 
+	logger->info(L"Timeout expired with error code: {} ({})",
+		ec.value(),
 		_STATEDB_UTILS to_wstring(ec.message())
 	);
 	close(ec);
@@ -205,22 +206,22 @@ void tcp_connection::handle_timeout_expiration(const BOOST_ERR_CODE& ec, std::sh
 
 // Handler for async operation - reading data from socket
 void tcp_connection::handle_data(
-	const BOOST_ERR_CODE& ec, 
-	size_t bt, 
-	bool required, 
-	boost::function<void(const BOOST_ERR_CODE&, size_t)> next, 
+	const BOOST_ERR_CODE& ec,
+	size_t bt,
+	bool required,
+	boost::function<void(const BOOST_ERR_CODE&, size_t)> next,
 	std::shared_ptr<bool> operationIsDone
 )
 {
 	*operationIsDone = true;
 	logger->debug(
-		L"Received {} bytes, current dynamic storage: {}, success: {}, errno: {}, errmsg: {}", 
-		bt, 
+		L"Received {} bytes, current dynamic storage: {}, success: {}, errno: {}, errmsg: {}",
+		bt,
 		_STATEDB_UTILS to_wstring(dynamic_storage_.get_type()),
 		!ec.failed(),
 		ec.value(),
 		_STATEDB_UTILS to_wstring(ec.message())
-		);
+	);
 	// If operation failed but were required
 	if (required && ec.failed())
 	{
@@ -264,28 +265,19 @@ void tcp_connection::handle_message(const BOOST_ERR_CODE& ec, size_t bt)
 
 	message_preamble& msg = dynamic_storage_.get<message_preamble>();
 	// Working with message
+	logger->debug("Received message ID: {}", msg.id);
 
-	if (!msg.valid())
-	{
-		logger->warn("Received invalid message. ID: {}, PREAMBLE: {} {}", msg.id, msg._PREAMBLE[0], msg._PREAMBLE[1]);
-		dynamic_storage_.deallocate();
-	}
-	else
-	{
-		logger->debug("Received message ID: {}", msg.id);
-
-		// Call signal
-		dynamic_storage_.deallocate(); // IMPORTANT Deallocate BEFORE calling signal
-		on_new_message_(*this, msg);
-	}
+	// Call signal
+	dynamic_storage_.deallocate(); // IMPORTANT Deallocate BEFORE calling signal
+	on_new_message_(*this, msg);
 
 	start_read_message();
 }
 
 void tcp_connection::handle_write_operation(
-	const BOOST_ERR_CODE& ec, 
-	size_t bt, 
-	bool required, 
+	const BOOST_ERR_CODE& ec,
+	size_t bt,
+	bool required,
 	boost::function<void(const BOOST_ERR_CODE&, size_t)> next,
 	std::shared_ptr<bool> operationIsDone
 )

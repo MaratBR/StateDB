@@ -31,6 +31,13 @@ public:
 		dispose();
 	}
 
+	boost::optional<db&> get_inner()
+	{
+		if (_db == nullptr)
+			return boost::none;
+		return boost::optional<db&>(*_db);
+	}
+
 	void dispose()
 	{
 		_ENSUREDEL(_db);

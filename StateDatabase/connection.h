@@ -44,21 +44,31 @@ public:
 	{
 		using pending_operation_base::pending_operation_base;
 
-		virtual void perform(tcp_connection& ds) override
+		virtual void perform(tcp_connection& conn) override
 		{
-			ds.async_read_message<T>(handler);
+			conn.async_read_message<T>(handler, timeout, required);
 		}
 	};
 
 	template<typename T>
 	struct pending_write_operation : public pending_operation_base
 	{
-		using pending_operation_base::pending_operation_base;
-
-		virtual void perform(tcp_connection& ds) override
+		pending_write_operation(
+			T& val,
+			boost::function<void(const BOOST_ERR_CODE&, size_t)> handler_,
+			bool required_,
+			boost::posix_time::milliseconds timeout_
+		)
+			: pending_operation_base::pending_operation_base(handler_, required_, timeout), val(val)
 		{
-			//ds.async_read_message<T>(handler);
 		}
+
+		virtual void perform(tcp_connection& conn) override
+		{
+			conn.async_write_message<T>(val, handler, timeout, required);
+		}
+
+		T val;
 	};
 
 	struct pending_write_raw_operation : public pending_operation_base
@@ -305,6 +315,9 @@ public:
 
 	template<typename T>
 	friend struct pending_write_operation;
+
+	friend struct pending_write_raw_operation;
+	friend struct pending_read_raw_operation;
 private:
 	using pending_operations_queue = std::queue<std::shared_ptr<pending_operation_base>>;
 

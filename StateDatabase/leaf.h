@@ -53,16 +53,16 @@ public:
 	bool is_leaf() const noexcept override { return true; }
 	TKey primary_key() const override { return this->m_list.get_root_key(); }
 	bool is_full() const noexcept override { return size() > max_size; }
-#ifdef DEBUG
-	void debug_print(size_t depth = 0) override
+	virtual void iterate(boost::function<void(TKey&, TVal&)> iterator) override
 	{
-		print_depth(depth);
-		std::cout << "<leaf size=" << size() << " has_next=" << (m_next == nullptr ? "no" : "yes") << ">" << std::endl;
-		m_list.debug_print(depth + 1);
-		print_depth(depth);
-		std::cout << "</leaf>" << std::endl;
+		leaf<TKey, TVal, ORDER>* l = this;
+		
+		while (l != nullptr)
+		{
+			l->m_next->iterate(iterator);
+			l = l->m_next;
+		}
 	}
-#endif
 			
 private:
 

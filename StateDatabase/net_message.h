@@ -1,5 +1,6 @@
 #pragma once
 #include "pch.h"
+#include "flags.h"
 
 _BEGIN_STATEDB_NET
 
@@ -17,12 +18,10 @@ struct hello_message_static
 
 struct message_preamble
 {
-	const char _PREAMBLE[3]{ 'M', 'S', 'G' };
+	using flags_type = flags_t<1>;
 	commands::command_t id;
+	flags_type flags;
 	uint32_t size;
-
-
-	bool valid() const;
 };
 
 struct message_out_preamble
@@ -42,15 +41,20 @@ struct static_simple_message : public message_out_preamble
 
 using make_pong_message = static_simple_message<commands::response_pong>;
 
+using make_key_deleted_preamble = static_simple_message<commands::response_key_deleted>;
+
+using make_key_updated_preamble = static_simple_message<commands::response_key_update>;
+
 #pragma pack(pop)
 
 
 struct processed_message
 {
-	processed_message(const commands::command_t id, const uint32_t size, void* buffer);
+	processed_message(message_preamble& msgp, void* buffer);
 
 	const commands::command_t id;
 	uint32_t size;
+	message_preamble::flags_type flags;
 	void* buffer;
 
 	char* get_cstr();

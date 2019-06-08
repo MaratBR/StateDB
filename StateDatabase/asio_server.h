@@ -2,6 +2,7 @@
 #include "pch.h"
 #include "connection.h"
 #include "dispatcher.h"
+#include "db.h"
 
 _BEGIN_STATEDB_NET
 
@@ -44,10 +45,29 @@ public:
 		struct get_handler
 		{
 			void operator()(tcp_connection&, asio_server&, processed_message&);
+
+			static void send_key_not_found(tcp_connection&, const char* key);
+			static void send_value(tcp_connection& conn, asio_server& server, db_object& obj);
+			static void send_value(tcp_connection& conn, asio_server& server, const char* key);
+		};
+
+		struct set_handler
+		{
+			void operator()(tcp_connection&, asio_server&, processed_message&);
+		};
+
+		struct delete_handler
+		{
+			void operator()(tcp_connection&, asio_server&, processed_message&);
+		};
+
+		struct get_all_handler
+		{
+			void operator()(tcp_connection&, asio_server&, message_preamble&);
 		};
 	};
 
-	asio_server(boost::asio::ip::tcp::endpoint ep);
+	asio_server(boost::asio::ip::tcp::endpoint ep, db& db_);
 
 	void start_listening();
 
@@ -59,6 +79,9 @@ public:
 	{
 		return is_listening_;
 	}
+	void apply_all_connections(
+		boost::function<void(tcp_connection&)> h
+	);
 private:
 	void init_dispatcher();
 
@@ -85,6 +108,7 @@ private:
 	void handle_connection_close(tcp_connection& conn);
 	void handle_connection_remove(std::string connId);
 
+	db& db_;
 	boost::asio::io_context io_service_;
 	boost::asio::ip::tcp::acceptor acceptor_;
 	bool is_listening_ = false;

@@ -5,9 +5,10 @@
 
 _BEGIN_STATEDB_NET
 
-asio_server::asio_server(boost::asio::ip::tcp::endpoint ep)
+asio_server::asio_server(boost::asio::ip::tcp::endpoint ep, db& db_)
 	: acceptor_(io_service_, ep),
-	stats_timer(io_service_)
+	stats_timer(io_service_),
+	db_(db_)
 {
 	address_string = boost::str(boost::format("%s:%d") % ep.address().to_string() % ep.port());
 	logger_ = logging::get_server_logger(address_string);
@@ -73,11 +74,18 @@ void asio_server::handle_connection_remove(std::string connId)
 	logger_->debug("Connection {} were removed from hashmap", connId);
 }
 
+void asio_server::apply_all_connections(boost::function<void(tcp_connection&)> h)
+{
+	for (auto& p : connections)
+		h(*p.second);
+}
+
 void asio_server::init_dispatcher()
 {
 	logger_->debug("Initializing dispatcher...");
 	dispatcher_.register_handler<handlers::ping_handler>(commands::request_ping);
 	dispatcher_.register_handler(commands::request_get, handlers::process_message(handlers::get_handler()));
+	dispatcher_.register_handler(commands::request_set, handlers::process_message(handlers::set_handler()));
 }
 
 void asio_server::start_stats_task()
@@ -121,7 +129,7 @@ void asio_server::handlers::process_message::handle_proccessed_data(
 	message_preamble msgp
 )
 {
-	processed_message msg(msgp.id, msgp.size, conn.get_read_buffer().get_binary());
+	processed_message msg(msgp, conn.get_read_buffer().get_binary());
 	pmsg._handler(conn, server, msg);
 }
 
@@ -151,10 +159,156 @@ void asio_server::handlers::ping_handler::operator()(tcp_connection& conn, asio_
 void asio_server::handlers::get_handler::operator()(tcp_connection& conn, asio_server& server, processed_message& msgp)
 {
 	char* key = msgp.as_cstr();
+	server.logger_->debug("Received GET for key '{}'", key);
+	send_value(conn, server, key);
+}
+
+void asio_server::handlers::get_handler::send_key_not_found(tcp_connection& conn, const char* key)
+{
+	// Send key-not-found message
+	make_key_deleted_preamble preamble;
+	preamble.size = strlen(key) + 1;
+
+	// Data inside processed_message will be gone soon, so we should copy that
+	char* deletedKey = new char[preamble.size];
+	std::memcpy(deletedKey, key, preamble.size);
+
+	conn.async_write_message(preamble);
+	conn.async_write_raw(deletedKey, preamble.size, [deletedKey](const BOOST_ERR_CODE&, size_t) { delete[] deletedKey; }, conn.get_timeout());
+}
+
+void asio_server::handlers::get_handler::send_value(tcp_connection& conn, asio_server& server, db_object& obj)
+{
+	dtypes::dtype_t type = obj.get_type();
+	std::string key = obj.get_key();
+
+	constexpr size_t typeIdSize = sizeof(dtypes::dtype_t);
+	size_t 
+		objSize = obj.get_size(),
+		keySize = key.length() + 1;
+
+	size_t size = typeIdSize + objSize + keySize;
+
+	make_key_updated_preamble preamble;
+	preamble.size = size;
+
+	char* data = new char[size];
+
+	// Copy zero-terminated key
+	std::memcpy(data, key.data(), key.length());
+	data[key.length()] = '\0';
+
+	char* objMemory = data + keySize;
+	obj.write_to(objMemory + typeIdSize, objSize);
+	*reinterpret_cast<dtypes::dtype_t*>(objMemory ) = obj.get_type();
+
+	std::shared_ptr<char> dataPtr(data, [](char* ptr) { delete[] ptr; });
+	conn.async_write_message(
+		preamble,
+		[dataPtr, data, &conn, size](const BOOST_ERR_CODE&, size_t)
+		{
+
+			conn.async_write_raw(
+				data,
+				size,
+				[dataPtr](const BOOST_ERR_CODE&, size_t) {},
+				conn.get_timeout()
+			);
+		}
+	);
+}
+
+void asio_server::handlers::get_handler::send_value(tcp_connection& conn, asio_server& server, const char* key)
+{
+	size_t keyHash = make_hash(key);
+	boost::optional<db_object*> obj = server.db_.get_object(keyHash);
+
+	if (obj.has_value())
+	{
+		// Send value to user
+		db_object& objRef = *obj.value();
+		send_value(conn, server, objRef);
+	}
+	else
+	{
+		send_key_not_found(conn, key);
+	}
+}
+
+void asio_server::handlers::set_handler::operator()(tcp_connection& conn, asio_server& server, processed_message& pmsg)
+{
+	size_t keySize = 0;
+	char* chBuf = reinterpret_cast<char*>(pmsg.buffer);
+	while (keySize < pmsg.size && chBuf[keySize] != '\0')
+	{
+		keySize++;
+	}
+
+	if (pmsg.size - keySize < 1 + sizeof(dtypes::dtype_t))
+	{
+		// Not enought space for actual data
+		// TODO Send error
+		return;
+	}
+
+	chBuf[keySize] = '\0';
+	
+	dtypes::dtype_t dtype = *reinterpret_cast<dtypes::dtype_t*>(chBuf + keySize + 1);
+
+	if (!dtypes::has_type(dtype))
+	{
+		// Unknown type
+		// TODO Send error
+		return;
+	}
+
+	try
+	{
+		server.db_.set_value(
+			chBuf,  // hash of the key
+			dtype, 
+			chBuf + keySize + 1 + sizeof(dtypes::dtype_t), // address of the space where value is stored
+			pmsg.size - keySize - 1 - sizeof(dtypes::dtype_t) // size of this space
+		);
+	}
+	catch (dtypes::unsufficient_space exc)
+	{
+		// Not enought space for actual data
+		// TODO Send error
+		return;
+	}
+	
+	server.apply_all_connections(
+		boost::bind(static_cast<void(*)(tcp_connection&, asio_server&, const char*)>(&get_handler::send_value), boost::placeholders::_1, boost::ref(server), chBuf)
+	);
+}
+
+void asio_server::handlers::delete_handler::operator()(tcp_connection& conn, asio_server& server, processed_message& msgp)
+{
+	char* key = msgp.as_cstr();
 	size_t keyHash = make_hash(key);
 	server.logger_->debug("Received GET from {}, {}", keyHash, key);
 
+	bool deleted = server.db_.delete_key(keyHash);
 
+	if (!deleted)
+		get_handler::send_key_not_found(conn, key);
+	else
+		server.apply_all_connections(
+			boost::bind(&get_handler::send_key_not_found, boost::placeholders::_1, key)
+		);
+}
+
+
+void asio_server::handlers::get_all_handler::operator()(tcp_connection& conn, asio_server& server, message_preamble&)
+{
+	server.db_.iterate(
+		[&conn, &server](size_t&, db_object& obj) 
+		{
+			get_handler::send_value(conn, server, obj.get_key().data());
+		}
+	);
 }
 
 _END_STATEDB_NET
+

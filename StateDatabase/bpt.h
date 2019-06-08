@@ -15,6 +15,11 @@ public:
 		return m_root->get_val_ptr(key);
 	}
 
+	void iterate(boost::function<void(TKey&, TVal&)> fn)
+	{
+		m_root->iterate(fn);
+	}
+
 	bool delete_key(TKey key)
 	{
 		if (m_root != nullptr)
@@ -47,16 +52,6 @@ public:
 				m_root = newRoot;
 		}
 	}
-
-#ifdef DEBUG
-	void print_debug()
-	{
-		std::cout << "<tree>" << std::endl;
-		if (m_root != nullptr)
-			m_root->debug_print();
-		std::cout << "</tree>" << std::endl;
-	}
-#endif
 private:
 	bpt_internal<TKey, TVal, ORDER>* m_root = nullptr;
 };

@@ -156,6 +156,9 @@
     <ClInclude Include="dispatcher.h">
       <Filter>Файлы заголовков\utils</Filter>
     </ClInclude>
+    <ClInclude Include="dtypes_utils.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">

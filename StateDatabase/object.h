@@ -20,8 +20,8 @@ private:
 class db_object
 {
 public:
-	db_object();
-	db_object(dtypes::dtype_t dtype);
+	db_object(std::string key);
+	db_object(dtypes::dtype_t dtype, std::string key);
 
 	void set_type(dtypes::dtype_t dtype);
 	void clear();
@@ -35,9 +35,15 @@ public:
 	{
 		return dtypes::get_implementor(get_type()).value();
 	}
+
+	size_t get_size();
+	size_t write_to(void* to, size_t bufSize);
+	size_t load_from(void* from, size_t bufSize);
+	std::string& get_key();
 private:
 	dtypes::data_storage_type ds;
 	dtypes::dtype_t dtype;
+	std::string key;
 };
 
 _END_STATEDB

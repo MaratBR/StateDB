@@ -24,6 +24,7 @@ namespace commands {
 	constexpr command_t request_delete = 2;
 	constexpr command_t request_ping = 3;
 	constexpr command_t request_set = 4;
+	constexpr command_t request_get_all = 5;
 }
 
 _END_STATEDB

@@ -51,10 +51,9 @@ _END_STATEDB
 // https://gist.github.com/codebrainz/8ece2a9015a3ed0d260f
 namespace std
 {
-	template <>
-	struct hash<char*>
+	namespace _cstr_hash_internal
 	{
-		size_t operator()(const char* s) const
+		inline size_t _string_hash(const char* s)
 		{
 			// http://www.cse.yorku.ca/~oz/hash.html
 			size_t h = 5381;
@@ -62,6 +61,24 @@ namespace std
 			while ((c = *s++))
 				h = ((h << 5) + h) + c;
 			return h;
+		}
+	}
+
+	template <>
+	struct hash<char*>
+	{
+		size_t operator()(const char* s) const
+		{
+			return _cstr_hash_internal::_string_hash(s);
+		}
+	};
+
+	template <>
+	struct hash<const char*>
+	{
+		size_t operator()(const char* s) const
+		{
+			return _cstr_hash_internal::_string_hash(s);
 		}
 	};
 }

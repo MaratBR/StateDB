@@ -13,9 +13,7 @@ public:
 	virtual bool is_full() const noexcept = 0;
 	virtual bool delete_key(TKey key) = 0;
 	virtual TVal* get_val_ptr(TKey key) = 0;
-#ifdef DEBUG
-	virtual void debug_print(size_t depth = 0) = 0;
-#endif
+	virtual void iterate(boost::function<void(TKey&, TVal&)> fn) = 0;
 };
 
 _END_STATEDB_BPT

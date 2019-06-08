@@ -94,6 +94,12 @@ public:
 		data.resize(s);
 	}
 
+	void allocate_binary(size_t s, void* memory)
+	{
+		allocate_binary(s);
+		std::memcpy(data.data(), memory, s);
+	}
+
 	template<typename T, typename ...TArgs>
 	inline void allocate_constructed(TArgs... args)
 	{

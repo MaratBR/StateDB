@@ -61,17 +61,21 @@ int main()
 
 	show_header();
 
+	statedb::db_wrapper dbw(boost::filesystem::current_path());
+
+	_TRY
+		dbw.load_data();
+	_CRITICAL_CATCH
+
 	statedb::net::asio_server server(boost::asio::ip::tcp::endpoint(
-		boost::asio::ip::address_v4::loopback(), 3456));
+		boost::asio::ip::address_v4::loopback(), 3456), dbw.get_inner().value());
 
 	server.start_listening();
 	server.run();
 
-	statedb::db_wrapper dbw(boost::filesystem::current_path());
 	
-	_TRY
-		dbw.load_data();
-	_CRITICAL_CATCH
+
+	
 
 	time_t rawtime;
 	tm timeinfo;
