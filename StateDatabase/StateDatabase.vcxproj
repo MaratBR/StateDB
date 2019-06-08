@@ -174,7 +174,6 @@
     <ClInclude Include="bpt_base.h" />
     <ClInclude Include="bpt_internal.h" />
     <ClInclude Include="commands.h" />
-    <ClInclude Include="compile_time.h" />
     <ClInclude Include="config.h" />
     <ClInclude Include="connection.h" />
     <ClInclude Include="db.h" />
@@ -183,9 +182,7 @@
     <ClInclude Include="db_wrapper.h" />
     <ClInclude Include="dispatcher.h" />
     <ClInclude Include="dtypes.h" />
-    <ClInclude Include="dtypes_collection.h" />
     <ClInclude Include="dtypes_utils.h" />
-    <ClInclude Include="dtype_decl.h" />
     <ClInclude Include="dynamic_storage.h" />
     <ClInclude Include="empty_handler.h" />
     <ClInclude Include="exceptions.h" />
@@ -217,8 +214,6 @@
     <ClCompile Include="db.cpp" />
     <ClCompile Include="db_header.cpp" />
     <ClCompile Include="dtypes.cpp" />
-    <ClCompile Include="dtypes_collection.cpp" />
-    <ClCompile Include="dtype_decl.cpp" />
     <ClCompile Include="format_utils.cpp" />
     <ClCompile Include="memory_ptr.cpp" />
     <ClCompile Include="messages_dispatcher.cpp" />

@@ -3,7 +3,6 @@
 #include "bpt.h"
 #include "utils.h"
 #include "db_header.h"
-#include "dtypes_collection.h"
 #include "object.h"
 
 _BEGIN_STATEDB

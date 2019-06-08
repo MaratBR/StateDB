@@ -28,6 +28,12 @@
     <Filter Include="Файлы заголовков\bpt">
       <UniqueIdentifier>{78b4183e-b557-4089-bff1-3a70ff28a329}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Исходные файлы\db">
+      <UniqueIdentifier>{06c4cf37-c673-4ae4-985c-6c5f4c53c521}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Файлы заголовков\db">
+      <UniqueIdentifier>{cce505a2-856d-4816-94da-3d848bc788a3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -36,31 +42,7 @@
     <ClInclude Include="pch.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="basic_types.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
-    <ClInclude Include="commands.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
-    <ClInclude Include="compile_time.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
     <ClInclude Include="config.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
-    <ClInclude Include="db.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
-    <ClInclude Include="db_header.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
-    <ClInclude Include="db_wrapper.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
-    <ClInclude Include="dtype_decl.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
-    <ClInclude Include="dtypes_collection.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
     <ClInclude Include="exceptions.h">
@@ -79,12 +61,6 @@
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
     <ClInclude Include="log_utils.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
-    <ClInclude Include="messages_dispatcher.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
-    <ClInclude Include="net_message.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
     <ClInclude Include="net_utils.h">
@@ -141,9 +117,6 @@
     <ClInclude Include="format_utils.h">
       <Filter>Файлы заголовков\utils</Filter>
     </ClInclude>
-    <ClInclude Include="dtypes.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
     <ClInclude Include="object.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
@@ -156,24 +129,36 @@
     <ClInclude Include="dispatcher.h">
       <Filter>Файлы заголовков\utils</Filter>
     </ClInclude>
+    <ClInclude Include="db.h">
+      <Filter>Файлы заголовков\db</Filter>
+    </ClInclude>
+    <ClInclude Include="db_header.h">
+      <Filter>Файлы заголовков\db</Filter>
+    </ClInclude>
+    <ClInclude Include="db_wrapper.h">
+      <Filter>Файлы заголовков\db</Filter>
+    </ClInclude>
+    <ClInclude Include="dtypes.h">
+      <Filter>Файлы заголовков\db</Filter>
+    </ClInclude>
+    <ClInclude Include="net_message.h">
+      <Filter>Файлы заголовков\net</Filter>
+    </ClInclude>
+    <ClInclude Include="messages_dispatcher.h">
+      <Filter>Файлы заголовков\net</Filter>
+    </ClInclude>
+    <ClInclude Include="basic_types.h">
+      <Filter>Файлы заголовков\db</Filter>
+    </ClInclude>
+    <ClInclude Include="commands.h">
+      <Filter>Файлы заголовков\net</Filter>
+    </ClInclude>
     <ClInclude Include="dtypes_utils.h">
-      <Filter>Файлы заголовков</Filter>
+      <Filter>Файлы заголовков\utils</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
-      <Filter>Исходные файлы</Filter>
-    </ClCompile>
-    <ClCompile Include="db.cpp">
-      <Filter>Исходные файлы</Filter>
-    </ClCompile>
-    <ClCompile Include="db_header.cpp">
-      <Filter>Исходные файлы</Filter>
-    </ClCompile>
-    <ClCompile Include="dtype_decl.cpp">
-      <Filter>Исходные файлы</Filter>
-    </ClCompile>
-    <ClCompile Include="dtypes_collection.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
     <ClCompile Include="net_utils.cpp">
@@ -203,14 +188,20 @@
     <ClCompile Include="messages_dispatcher.cpp">
       <Filter>Исходные файлы\net</Filter>
     </ClCompile>
+    <ClCompile Include="memory_ptr.cpp">
+      <Filter>Исходные файлы\utils</Filter>
+    </ClCompile>
+    <ClCompile Include="db_header.cpp">
+      <Filter>Исходные файлы\db</Filter>
+    </ClCompile>
+    <ClCompile Include="db.cpp">
+      <Filter>Исходные файлы\db</Filter>
+    </ClCompile>
     <ClCompile Include="dtypes.cpp">
-      <Filter>Исходные файлы</Filter>
+      <Filter>Исходные файлы\db</Filter>
     </ClCompile>
     <ClCompile Include="object.cpp">
-      <Filter>Исходные файлы</Filter>
-    </ClCompile>
-    <ClCompile Include="memory_ptr.cpp">
-      <Filter>Исходные файлы</Filter>
+      <Filter>Исходные файлы\db</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
