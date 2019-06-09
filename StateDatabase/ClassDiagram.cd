@@ -1,0 +1,382 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="db" Collapsed="true">
+    <Position X="15.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>MAQAIAAAECBQIAAAAAgAgAAAAAAICBAEAABAAAACAAA=</HashCode>
+      <FileName>db.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="db_wrapper" Collapsed="true">
+    <Position X="12.25" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IIAggAAAAEAABAAiAIAAAAAgAAAQAQAAAIAAAAQAAAA=</HashCode>
+      <FileName>db_wrapper.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="asio_server" Collapsed="true">
+    <Position X="12.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AECgAmIBAAAQQAAABAACQAABAAQGAAACKAABEAAAAAA=</HashCode>
+      <FileName>asio_server.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="tcp_connection" Collapsed="true">
+    <Position X="12.25" Y="3.5" Width="1.5" />
+    <NestedTypes>
+      <Struct Name="tcp_connection::pending_operation_base" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>connection.h</NewMemberFileName>
+        </TypeIdentifier>
+      </Struct>
+      <Struct Name="tcp_connection::pending_read_operation&lt;T&gt;" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>connection.h</NewMemberFileName>
+        </TypeIdentifier>
+      </Struct>
+      <Struct Name="tcp_connection::pending_write_operation&lt;T&gt;" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>connection.h</NewMemberFileName>
+        </TypeIdentifier>
+      </Struct>
+      <Struct Name="tcp_connection::pending_write_raw_operation" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>connection.h</NewMemberFileName>
+        </TypeIdentifier>
+      </Struct>
+      <Struct Name="tcp_connection::pending_read_raw_operation" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>connection.h</NewMemberFileName>
+        </TypeIdentifier>
+      </Struct>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>EQBAAyQUAACC5EAiAABgIAIgA0BCAAIAAIFAAABAQAE=</HashCode>
+      <FileName>connection.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="messages_dispatcher" Collapsed="true">
+    <Position X="15.75" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAIAACQAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>messages_dispatcher.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="tree&lt;TKey, TVal, ORDER&gt;" Collapsed="true">
+    <Position X="14" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAACAAAAAAAAwAQAAAAAAAAAAAAAABAAAAAAA=</HashCode>
+      <FileName>bpt.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="bpt_base&lt;TKey, TVal, ORDER&gt;" Collapsed="true">
+    <Position X="2" Y="9.5" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAACAAAAAAAIgAAAAAIAAAABAAAAAACAAAEAA=</HashCode>
+      <FileName>bpt_base.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="bpt_internal&lt;TKey, TVal, ORDER&gt;" Collapsed="true">
+    <Position X="0.5" Y="10.75" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAiBAAAAAAIwAAAAAIBAAABECAAABCAIhUAI=</HashCode>
+      <FileName>bpt_internal.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="leaf&lt;TKey, TVal, ORDER&gt;" Collapsed="true">
+    <Position X="3.5" Y="10.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAABACBAAgAAAIgAAAAAJBAAABIAgAAICAEAEAI=</HashCode>
+      <FileName>leaf.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="abstract_stream_base" Collapsed="true">
+    <Position X="5" Y="3.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>abstract_stream.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="abstract_ostream" Collapsed="true">
+    <Position X="4.25" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ACAAAAAACAAAAAAAACAAAAAAAAAAAAAAAQAAAAAAAAA=</HashCode>
+      <FileName>abstract_stream.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="abstract_istream" Collapsed="true">
+    <Position X="6.5" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAACAAAAEAAAAAAAAAAQAAAAEAAAA=</HashCode>
+      <FileName>abstract_stream.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="istream_wrp" Collapsed="true">
+    <Position X="6.5" Y="6.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAIAAAAAAAAAAAAACAAAAEAAAAAAAAAQAAAAAEAAAA=</HashCode>
+      <FileName>abstract_stream.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ostream_wrp" Collapsed="true">
+    <Position X="4.25" Y="6.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ACAAAAAAAAAAAAAAACAAAAAAAAAAAAAAASEAAAAAAAA=</HashCode>
+      <FileName>abstract_stream.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="dispatcher&lt;TId, ...TArgs&gt;" Collapsed="true">
+    <Position X="14" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AEAAAAAAAEAAAAAAAAAAAAAAAAAAAABAAAAAAAIAAAA=</HashCode>
+      <FileName>dispatcher.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="dynamic_storage" Collapsed="true">
+    <Position X="15.75" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ABQAAEAAGQAAAAAAAIQAQABAAgAAEAAYwACQAAcQAAg=</HashCode>
+      <FileName>dynamic_storage.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="memory_ptr" Collapsed="true">
+    <Position X="14" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAICAAAAAAAAAAAAAAAAAAAAAAAAAAwAAABAAA=</HashCode>
+      <FileName>memory_ptr.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="db_exception" Collapsed="true">
+    <Position X="17.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAA=</HashCode>
+      <FileName>exceptions.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="hasher&lt;T&gt;" Collapsed="true">
+    <Position X="17.5" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAgAAAAAA=</HashCode>
+      <FileName>hash.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="leaf_list&lt;TKey, TVal&gt;" Collapsed="true">
+    <Position X="12.25" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAACAAAAAAAIwAAQAAABAAAAAAAAABAAIAEAA=</HashCode>
+      <FileName>list.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="invalid_dtype" Collapsed="true">
+    <Position X="20" Y="1.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAgAAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAABAAAA=</HashCode>
+      <FileName>object.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="db_object" Collapsed="true">
+    <Position X="20" Y="0.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>IFggAIAAAAAAAAAgAACEQAAAAAACAAAAAAACgAACAAA=</HashCode>
+      <FileName>object.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="segment_container&lt;T&gt;" Collapsed="true">
+    <Position X="17.5" Y="2.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAgAAAAAAAAAAAgAAAAAAAAggBAAAAAAAACAIBgAAA=</HashCode>
+      <FileName>segment_container.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="stream_rw&lt;TDerived&gt;" Collapsed="true">
+    <Position X="20" Y="2.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAgAAAAAAAAAAAgAAAAAAAAAgAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>utils.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="dtypes::unsufficient_space" Collapsed="true">
+    <Position X="15.75" Y="3.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAA=</HashCode>
+      <FileName>dtypes.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="dtypes::impl::implementor_base" Collapsed="true">
+    <Position X="5.25" Y="0.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>ABAgAIAAIAAAAAAAAAAAAAAAAAAAAAIAAAAAgAAAAAA=</HashCode>
+      <FileName>dtypes.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="dtypes::impl::static_implementor&lt;T, IS_NUMERIC&gt;" Collapsed="true">
+    <Position X="9" Y="1.75" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>ABAgAIAAIAAAAAAAAAAAAAAAAAAAAAIAAAAAgAAAAAA=</HashCode>
+      <FileName>dtypes.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="dtypes::impl::blob_wrapper" Collapsed="true">
+    <Position X="14" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAgAAAAAEAAAAAAAAAAAAAAAAAAAAAAgAAQgAAAAAA=</HashCode>
+      <FileName>dtypes.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="dtypes::impl::none_implementor" Collapsed="true">
+    <Position X="0.75" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ABAgAIAAIAAAAAAAAAAAAAAAAAAAAAIAAAAAgAAAAAA=</HashCode>
+      <FileName>dtypes.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="dtypes::impl::blob_implementor" Collapsed="true">
+    <Position X="3" Y="1.75" Width="1.5" />
+    <InheritanceLine Type="dtypes::impl::implementor_base" FixedToPoint="true">
+      <Path>
+        <Point X="6.125" Y="1.062" />
+        <Point X="6.125" Y="1.375" />
+        <Point X="3.812" Y="1.375" />
+        <Point X="3.812" Y="1.75" />
+      </Path>
+    </InheritanceLine>
+    <TypeIdentifier>
+      <HashCode>ABAgAIAAIAAAAAAAAAAAAAAAAAAAAAIAAAAAgAAAAAA=</HashCode>
+      <FileName>dtypes.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="dtypes::impl::string_implementor" Collapsed="true">
+    <Position X="5.25" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ABAgAIAAIAAAAAAAAAAAAAAAAAAAAAIAAAAAgAAAAAA=</HashCode>
+      <FileName>dtypes.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="dtypes::impl::bigint_implementor" Collapsed="true">
+    <Position X="7" Y="1.75" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>ABAgAIAAIAAAAAAAAAAAAAAAAAAAAAIAAAAAgAAAAAA=</HashCode>
+      <FileName>dtypes.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Struct Name="char_arr&lt;SIZE&gt;" Collapsed="true">
+    <Position X="14" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QAAAAAAAAAAAAAAAAIAAAAAAAgAAAAAAAAAwAAAAAAA=</HashCode>
+      <FileName>basic_types.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="db_inner" Collapsed="true">
+    <Position X="19.25" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAgAAQAAAAAAAAggAAAAAAAAgAAAAAAAAAAAAAQIAA=</HashCode>
+      <FileName>db.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="db_magic" Collapsed="true">
+    <Position X="12.25" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAABAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAA=</HashCode>
+      <FileName>db_header.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="db_meta" Collapsed="true">
+    <Position X="14" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAACAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABA=</HashCode>
+      <FileName>db_header.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="db_info" Collapsed="true">
+    <Position X="17.5" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAgAAAAAAEAAAAoIAAAAAAAAgAEAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>db_header.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="db_header" Collapsed="true">
+    <Position X="15.75" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAgAAIAAAEAAAAgAAABEAAAggAAAAAAQAAAAACAACA=</HashCode>
+      <FileName>db_header.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="hello_message_static" Collapsed="true">
+    <Position X="12.25" Y="6.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAQ=</HashCode>
+      <FileName>net_message.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="message_preamble" Collapsed="true">
+    <Position X="17.5" Y="5.75" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAgQ=</HashCode>
+      <FileName>net_message.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="message_out_preamble" Collapsed="true">
+    <Position X="9.25" Y="3.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAgA=</HashCode>
+      <FileName>net_message.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="static_simple_message&lt;ID&gt;" Collapsed="true">
+    <Position X="9" Y="4.75" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAA=</HashCode>
+      <FileName>net_message.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="processed_message" Collapsed="true">
+    <Position X="19.75" Y="5.75" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAABAAAAAAAAIAAAAAAAAAAAAAAAABAAAQAAgQ=</HashCode>
+      <FileName>net_message.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="flags_t&lt;count&gt;" Collapsed="true">
+    <Position X="15.75" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAQAQAAAAAAAAAAAAAAYAAAAAAA=</HashCode>
+      <FileName>flags.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="kv_pair&lt;TKey, TVal&gt;" Collapsed="true">
+    <Position X="14" Y="6.75" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAMAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>list.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="list_node&lt;TKey, TVal&gt;" Collapsed="true">
+    <Position X="2" Y="11.75" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAgAAIAEAAAAAAAAAAAAAAAAQAAAACAA=</HashCode>
+      <FileName>list.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="segmenent_preamble" Collapsed="true">
+    <Position X="12.25" Y="7.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAACAAAACAAAAAAAAAAAAAAAAAAAAAIACAAA=</HashCode>
+      <FileName>segment_container.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="_bigint::bigint" Collapsed="true">
+    <Position X="12.25" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAIAAAAgGAAAAAAKAQAQAQAAAAAABgoAAgAAAAAAA=</HashCode>
+      <FileName>bigint.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Typedef Name="commands::command_t" Collapsed="true">
+    <Position X="14" Y="7.75" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>commands.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

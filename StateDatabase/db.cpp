@@ -53,7 +53,7 @@ db::numeric_operation_result db::add(size_t keyHash, int32_t val)
 		return db::NumericOpNotFound;
 	if (!obj.value()->is_numeric())
 		return db::NumericOpNotNumeric;
-	obj.value().
+	
 	return db::NumericOpDone;
 }
 

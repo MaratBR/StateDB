@@ -167,7 +167,6 @@
   <ItemGroup>
     <ClInclude Include="abstract_stream.h" />
     <ClInclude Include="asio_server.h" />
-    <ClInclude Include="asio_stream.h" />
     <ClInclude Include="basic_types.h" />
     <ClInclude Include="bigint.h" />
     <ClInclude Include="bpt.h" />
@@ -209,7 +208,6 @@
   <ItemGroup>
     <ClCompile Include="abstract_stream.cpp" />
     <ClCompile Include="asio_server.cpp" />
-    <ClCompile Include="asio_stream.cpp" />
     <ClCompile Include="connection.cpp" />
     <ClCompile Include="db.cpp" />
     <ClCompile Include="db_header.cpp" />
@@ -229,6 +227,7 @@
     <ClCompile Include="utils.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="ClassDiagram.cd" />
     <None Include="cpp.hint" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -87,9 +87,6 @@
     <ClInclude Include="asio_server.h">
       <Filter>Файлы заголовков\net</Filter>
     </ClInclude>
-    <ClInclude Include="asio_stream.h">
-      <Filter>Файлы заголовков\utils</Filter>
-    </ClInclude>
     <ClInclude Include="bigint.h">
       <Filter>Файлы заголовков\utils</Filter>
     </ClInclude>
@@ -173,9 +170,6 @@
     <ClCompile Include="asio_server.cpp">
       <Filter>Исходные файлы\net</Filter>
     </ClCompile>
-    <ClCompile Include="asio_stream.cpp">
-      <Filter>Исходные файлы\utils</Filter>
-    </ClCompile>
     <ClCompile Include="connection.cpp">
       <Filter>Исходные файлы\net</Filter>
     </ClCompile>
@@ -206,5 +200,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="cpp.hint" />
+    <None Include="ClassDiagram.cd" />
   </ItemGroup>
 </Project>
