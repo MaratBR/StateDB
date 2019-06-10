@@ -141,9 +141,6 @@
     <ClInclude Include="net_message.h">
       <Filter>Файлы заголовков\net</Filter>
     </ClInclude>
-    <ClInclude Include="messages_dispatcher.h">
-      <Filter>Файлы заголовков\net</Filter>
-    </ClInclude>
     <ClInclude Include="basic_types.h">
       <Filter>Файлы заголовков\db</Filter>
     </ClInclude>
@@ -177,9 +174,6 @@
       <Filter>Исходные файлы\utils</Filter>
     </ClCompile>
     <ClCompile Include="net_message.cpp">
-      <Filter>Исходные файлы\net</Filter>
-    </ClCompile>
-    <ClCompile Include="messages_dispatcher.cpp">
       <Filter>Исходные файлы\net</Filter>
     </ClCompile>
     <ClCompile Include="memory_ptr.cpp">

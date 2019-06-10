@@ -67,22 +67,23 @@ public:
 private:
 	void verify_file()
 	{
-		logger->debug("Verifying file...");
+		logger->info("Verifying file...");
 		uintmax_t size = fs::file_size(db_filepath);
 		logger->debug("File size = {}", size);
 
 			
 		if (size < MINIMAL_HEADER_SIZE)
 		{
-			spdlog::info("Database file is empty or was corrupted, rewriting file");
+			logger->info("Database file is empty or was corrupted, rewriting file");
 			clear_file();
-			_db = new db(*fstream);
+			_db = new db(*fstream, db_filename);
 			_db->make_fresh();
 		}
 		else
 		{
-			_db = new db(*fstream);
+			_db = new db(*fstream, db_filename);
 			_db->reload();
+			logger->info("DB info loaded");
 		}
 	}
 

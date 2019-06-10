@@ -29,7 +29,7 @@ namespace dtypes
 #define STATEDB_DTYPE_FLOAT	9
 #define STATEDB_DTYPE_DOUBLE 10
 
-#define STATEDB_DTYPE_BIGINT 12
+#define STATEDB_DTYPE_BIGINT 11
 
 	class unsufficient_space : public std::exception
 	{

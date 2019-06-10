@@ -4,6 +4,7 @@
 #include "utils.h"
 #include "db_header.h"
 #include "object.h"
+#include "logging.h"
 
 _BEGIN_STATEDB
 
@@ -16,7 +17,7 @@ struct db_inner : public _STATEDB_UTILS stream_rw<db_inner>
 	statedb::bpt::tree<db_key_type, db_object, 6>* tree = nullptr;
 	db_header header;
 
-	db_inner() {}
+	db_inner() : tree(new statedb::bpt::tree<db_key_type, db_object, 6>()) {}
 	~db_inner()
 	{
 		if (tree)
@@ -34,8 +35,8 @@ struct db_inner : public _STATEDB_UTILS stream_rw<db_inner>
 class db
 {
 public:
-	db(std::fstream& stream)
-		: fstream(stream)
+	db(std::fstream& stream, std::string dbName)
+		: fstream(stream), logger_(logging::get_driver_logger(dbName))
 	{
 	}
 
@@ -104,8 +105,7 @@ private:
 		reset_inner();
 
 		inner->header.set_defaults();
-		inner->tree = new _STATEDB_BPT tree<size_t, db_object, 6>();
-		spdlog::info("DB object has been reseted");
+		logger_->info("DB object has been reseted");
 	}
 
 	// Loads data from DB file
@@ -123,6 +123,7 @@ private:
 	std::fstream& fstream;
 
 	db_inner* inner;
+	std::shared_ptr<spdlog::logger> logger_;
 };
 
 _END_STATEDB

@@ -195,7 +195,6 @@
     <ClInclude Include="logging.h" />
     <ClInclude Include="log_utils.h" />
     <ClInclude Include="memory_ptr.h" />
-    <ClInclude Include="messages_dispatcher.h" />
     <ClInclude Include="net_message.h" />
     <ClInclude Include="net_utils.h" />
     <ClInclude Include="object.h" />
@@ -214,7 +213,6 @@
     <ClCompile Include="dtypes.cpp" />
     <ClCompile Include="format_utils.cpp" />
     <ClCompile Include="memory_ptr.cpp" />
-    <ClCompile Include="messages_dispatcher.cpp" />
     <ClCompile Include="net_message.cpp" />
     <ClCompile Include="net_utils.cpp" />
     <ClCompile Include="object.cpp" />

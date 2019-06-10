@@ -107,7 +107,7 @@ private:
 		if (!is_listening_)
 			return;
 
-		logger_->debug("Waiting for a connection...");
+		logger_->info("Waiting for a connection...");
 		tcp_connection::pointer connection =
 			tcp_connection::create(io_service_);
 

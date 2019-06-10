@@ -26,7 +26,6 @@ struct db_magic
 struct db_meta
 {
 	byte_t version = STATEDB_MAJOR_VERSION;
-	size_t file_size = 0; // Can be used for lazy resizing. When database loads header it's forced to close, resize and then reopen file
 
 	void set_defaults()
 	{
@@ -64,18 +63,13 @@ struct db_header : public utils::stream_rw<db_header>
 {
 	db_header(){}
 	static const size_t magic_offset = sizeof(db_magic);
-	bool save_db_hash = _SAVE_DB_HASH_DEFAULT;
 	bool debug_mode = DEBUG_BOOL;
-	size_t db_hash = 0;
 	db_meta meta;
 
 	db_info info;
 
 	void set_defaults()
-	{
-		db_hash = 0;
-		save_db_hash = _SAVE_DB_HASH_DEFAULT;
-			
+	{			
 		info.set_defaults();
 		meta.set_defaults();
 	}

@@ -1,14 +1,21 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ClassDiagram MajorVersion="1" MinorVersion="1">
-  <Class Name="db" Collapsed="true">
-    <Position X="15.75" Y="0.5" Width="1.5" />
+  <Class Name="db">
+    <Position X="22.25" Y="0.5" Width="1.5" />
+    <NestedTypes>
+      <Enum Name="db::numeric_operation_result" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>db.h</NewMemberFileName>
+        </TypeIdentifier>
+      </Enum>
+    </NestedTypes>
     <TypeIdentifier>
-      <HashCode>MAQAIAAAECBQIAAAAAgAgAAAAAAICBAEAABAAAACAAA=</HashCode>
+      <HashCode>MAQAIAAAECBQIAAAAAgAgAAAAAAICBAEAABAEAACAAA=</HashCode>
       <FileName>db.h</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="db_wrapper" Collapsed="true">
-    <Position X="12.25" Y="1.5" Width="1.5" />
+    <Position X="16.5" Y="6.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>IIAggAAAAEAABAAiAIAAAAAgAAAQAQAAAIAAAAQAAAA=</HashCode>
       <FileName>db_wrapper.h</FileName>
@@ -16,35 +23,45 @@
   </Class>
   <Class Name="asio_server" Collapsed="true">
     <Position X="12.25" Y="0.5" Width="1.5" />
+    <NestedTypes>
+      <Struct Name="asio_server::handlers" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>asio_server.h</NewMemberFileName>
+        </TypeIdentifier>
+      </Struct>
+    </NestedTypes>
     <TypeIdentifier>
       <HashCode>AECgAmIBAAAQQAAABAACQAABAAQGAAACKAABEAAAAAA=</HashCode>
       <FileName>asio_server.h</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="tcp_connection" Collapsed="true">
-    <Position X="12.25" Y="3.5" Width="1.5" />
+  <Class Name="tcp_connection">
+    <Position X="24.5" Y="1.75" Width="3.25" />
+    <Compartments>
+      <Compartment Name="Nested Types" Collapsed="false" />
+    </Compartments>
     <NestedTypes>
-      <Struct Name="tcp_connection::pending_operation_base" Collapsed="true">
+      <Struct Name="tcp_connection::pending_operation_base">
         <TypeIdentifier>
           <NewMemberFileName>connection.h</NewMemberFileName>
         </TypeIdentifier>
       </Struct>
-      <Struct Name="tcp_connection::pending_read_operation&lt;T&gt;" Collapsed="true">
+      <Struct Name="tcp_connection::pending_read_operation&lt;T&gt;">
         <TypeIdentifier>
           <NewMemberFileName>connection.h</NewMemberFileName>
         </TypeIdentifier>
       </Struct>
-      <Struct Name="tcp_connection::pending_write_operation&lt;T&gt;" Collapsed="true">
+      <Struct Name="tcp_connection::pending_write_operation&lt;T&gt;">
         <TypeIdentifier>
           <NewMemberFileName>connection.h</NewMemberFileName>
         </TypeIdentifier>
       </Struct>
-      <Struct Name="tcp_connection::pending_write_raw_operation" Collapsed="true">
+      <Struct Name="tcp_connection::pending_write_raw_operation">
         <TypeIdentifier>
           <NewMemberFileName>connection.h</NewMemberFileName>
         </TypeIdentifier>
       </Struct>
-      <Struct Name="tcp_connection::pending_read_raw_operation" Collapsed="true">
+      <Struct Name="tcp_connection::pending_read_raw_operation">
         <TypeIdentifier>
           <NewMemberFileName>connection.h</NewMemberFileName>
         </TypeIdentifier>
@@ -55,35 +72,28 @@
       <FileName>connection.h</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="messages_dispatcher" Collapsed="true">
-    <Position X="15.75" Y="2.5" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAAAIAACQAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>messages_dispatcher.h</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="tree&lt;TKey, TVal, ORDER&gt;" Collapsed="true">
-    <Position X="14" Y="3.5" Width="1.5" />
+  <Class Name="tree&lt;TKey, TVal, ORDER&gt;">
+    <Position X="12" Y="3" Width="2.25" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAACAAAAAAAAwAQAAAAAAAAAAAAAABAAAAAAA=</HashCode>
       <FileName>bpt.h</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="bpt_base&lt;TKey, TVal, ORDER&gt;" Collapsed="true">
-    <Position X="2" Y="9.5" Width="2.25" />
+  <Class Name="bpt_base&lt;TKey, TVal, ORDER&gt;">
+    <Position X="2" Y="8" Width="2.25" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAACAAAAAAAIgAAAAAIAAAABAAAAAACAAAEAA=</HashCode>
       <FileName>bpt_base.h</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="bpt_internal&lt;TKey, TVal, ORDER&gt;" Collapsed="true">
+  <Class Name="bpt_internal&lt;TKey, TVal, ORDER&gt;">
     <Position X="0.5" Y="10.75" Width="2.75" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAiBAAAAAAIwAAAAAIBAAABECAAABCAIhUAI=</HashCode>
       <FileName>bpt_internal.h</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="leaf&lt;TKey, TVal, ORDER&gt;" Collapsed="true">
+  <Class Name="leaf&lt;TKey, TVal, ORDER&gt;">
     <Position X="3.5" Y="10.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAABACBAAgAAAIgAAAAAJBAAABIAgAAICAEAEAI=</HashCode>
@@ -133,14 +143,14 @@
     </TypeIdentifier>
   </Class>
   <Class Name="dynamic_storage" Collapsed="true">
-    <Position X="15.75" Y="1.5" Width="1.5" />
+    <Position X="12" Y="1.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>ABQAAEAAGQAAAAAAAIQAQABAAgAAEAAYwACQAAcQAAg=</HashCode>
       <FileName>dynamic_storage.h</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="memory_ptr" Collapsed="true">
-    <Position X="14" Y="2.5" Width="1.5" />
+    <Position X="15.75" Y="2.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAICAAAAAAAAAAAAAAAAAAAAAAAAAAwAAABAAA=</HashCode>
       <FileName>memory_ptr.h</FileName>
@@ -161,7 +171,7 @@
     </TypeIdentifier>
   </Class>
   <Class Name="leaf_list&lt;TKey, TVal&gt;" Collapsed="true">
-    <Position X="12.25" Y="2.5" Width="1.5" />
+    <Position X="16.25" Y="4.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAACAAAAAAAIwAAQAAABAAAAAAAAABAAIAEAA=</HashCode>
       <FileName>list.h</FileName>
@@ -174,15 +184,15 @@
       <FileName>object.h</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="db_object" Collapsed="true">
-    <Position X="20" Y="0.5" Width="1.75" />
+  <Class Name="db_object">
+    <Position X="19.75" Y="7" Width="1.75" />
     <TypeIdentifier>
       <HashCode>IFggAIAAAAAAAAAgAACEQAAAAAACAAAAAAACgAACAAA=</HashCode>
       <FileName>object.h</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="segment_container&lt;T&gt;" Collapsed="true">
-    <Position X="17.5" Y="2.5" Width="2" />
+    <Position X="17.75" Y="3" Width="2" />
     <TypeIdentifier>
       <HashCode>AAAgAAAAAAAAAAAgAAAAAAAAggBAAAAAAAACAIBgAAA=</HashCode>
       <FileName>segment_container.h</FileName>
@@ -266,57 +276,57 @@
       <FileName>basic_types.h</FileName>
     </TypeIdentifier>
   </Struct>
-  <Struct Name="db_inner" Collapsed="true">
-    <Position X="19.25" Y="4.75" Width="1.5" />
+  <Struct Name="db_inner">
+    <Position X="18" Y="8.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAgAAQAAAAAAAAggAAAAAAAAgAAAAAAAAAAAAAQIAA=</HashCode>
       <FileName>db.h</FileName>
     </TypeIdentifier>
   </Struct>
   <Struct Name="db_magic" Collapsed="true">
-    <Position X="12.25" Y="5.75" Width="1.5" />
+    <Position X="9.75" Y="7.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAABAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAA=</HashCode>
       <FileName>db_header.h</FileName>
     </TypeIdentifier>
   </Struct>
   <Struct Name="db_meta" Collapsed="true">
-    <Position X="14" Y="5.75" Width="1.5" />
+    <Position X="8.5" Y="6.25" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAACAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABA=</HashCode>
+      <HashCode>AAAAACAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>db_header.h</FileName>
     </TypeIdentifier>
   </Struct>
-  <Struct Name="db_info" Collapsed="true">
-    <Position X="17.5" Y="4.75" Width="1.5" />
+  <Struct Name="db_info">
+    <Position X="22" Y="5.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAgAAAAAAEAAAAoIAAAAAAAAgAEAAAAAAAAAAAAAAA=</HashCode>
       <FileName>db_header.h</FileName>
     </TypeIdentifier>
   </Struct>
-  <Struct Name="db_header" Collapsed="true">
-    <Position X="15.75" Y="4.75" Width="1.5" />
+  <Struct Name="db_header">
+    <Position X="16.25" Y="7.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAgAAIAAAEAAAAgAAABEAAAggAAAAAAQAAAAACAACA=</HashCode>
+      <HashCode>AAAgAAAAAAEAAAAgAAABEAAAggAAAAAAQAAAAACAAAA=</HashCode>
       <FileName>db_header.h</FileName>
     </TypeIdentifier>
   </Struct>
-  <Struct Name="hello_message_static" Collapsed="true">
-    <Position X="12.25" Y="6.75" Width="1.5" />
+  <Struct Name="hello_message_static">
+    <Position X="11.75" Y="5.75" Width="2.75" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAQ=</HashCode>
       <FileName>net_message.h</FileName>
     </TypeIdentifier>
   </Struct>
-  <Struct Name="message_preamble" Collapsed="true">
-    <Position X="17.5" Y="5.75" Width="2" />
+  <Struct Name="message_preamble">
+    <Position X="21" Y="9.75" Width="2" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAgQ=</HashCode>
       <FileName>net_message.h</FileName>
     </TypeIdentifier>
   </Struct>
-  <Struct Name="message_out_preamble" Collapsed="true">
-    <Position X="9.25" Y="3.5" Width="2" />
+  <Struct Name="message_out_preamble">
+    <Position X="9.25" Y="2.5" Width="2" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAgA=</HashCode>
       <FileName>net_message.h</FileName>
@@ -337,35 +347,35 @@
     </TypeIdentifier>
   </Struct>
   <Struct Name="flags_t&lt;count&gt;" Collapsed="true">
-    <Position X="15.75" Y="5.75" Width="1.5" />
+    <Position X="10" Y="5.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAQAQAAAAAAAAAAAAAAYAAAAAAA=</HashCode>
       <FileName>flags.h</FileName>
     </TypeIdentifier>
   </Struct>
-  <Struct Name="kv_pair&lt;TKey, TVal&gt;" Collapsed="true">
-    <Position X="14" Y="6.75" Width="2" />
+  <Struct Name="kv_pair&lt;TKey, TVal&gt;">
+    <Position X="11.25" Y="8.75" Width="2" />
     <TypeIdentifier>
       <HashCode>AAAAAMAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>list.h</FileName>
     </TypeIdentifier>
   </Struct>
-  <Struct Name="list_node&lt;TKey, TVal&gt;" Collapsed="true">
-    <Position X="2" Y="11.75" Width="2" />
+  <Struct Name="list_node&lt;TKey, TVal&gt;">
+    <Position X="5.25" Y="10.75" Width="2" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAgAAIAEAAAAAAAAAAAAAAAAQAAAACAA=</HashCode>
       <FileName>list.h</FileName>
     </TypeIdentifier>
   </Struct>
-  <Struct Name="segmenent_preamble" Collapsed="true">
-    <Position X="12.25" Y="7.75" Width="1.5" />
+  <Struct Name="segmenent_preamble">
+    <Position X="13.5" Y="8.75" Width="2.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAACAAAACAAAAAAAAAAAAAAAAAAAAAIACAAA=</HashCode>
       <FileName>segment_container.h</FileName>
     </TypeIdentifier>
   </Struct>
   <Struct Name="_bigint::bigint" Collapsed="true">
-    <Position X="12.25" Y="4.75" Width="1.5" />
+    <Position X="14.25" Y="5.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAIAAAAgGAAAAAAKAQAQAQAAAAAABgoAAgAAAAAAA=</HashCode>
       <FileName>bigint.h</FileName>
