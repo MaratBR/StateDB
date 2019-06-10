@@ -20,8 +20,8 @@ private:
 class db_object
 {
 public:
-	db_object(std::string key);
-	db_object(dtypes::dtype_t dtype, std::string key);
+	db_object(const std::string& key);
+	db_object(dtypes::dtype_t dtype, const std::string& key);
 
 	void set_type(dtypes::dtype_t dtype);
 	void clear();

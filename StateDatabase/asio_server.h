@@ -106,7 +106,7 @@ private:
 	void handle_message(tcp_connection& conn, message_preamble& preamble);
 	void handle_accept(tcp_connection::pointer connection, const boost::system::error_code& ec);
 	void handle_connection_close(tcp_connection& conn);
-	void handle_connection_remove(std::string connId);
+	void handle_connection_remove(const std::string& connId);
 
 	db& db_;
 	boost::asio::io_context io_service_;

@@ -4,12 +4,12 @@
 _BEGIN_STATEDB
 
 
-db_object::db_object(std::string key)
+db_object::db_object(const std::string& key)
 	: db_object(STATEDB_DTYPE_NONE, key)
 {
 }
 
-db_object::db_object(dtypes::dtype_t dtype, std::string key)
+db_object::db_object(dtypes::dtype_t dtype, const std::string& key)
 	: dtype(dtype), key(key)
 {
 	clear();

@@ -9,6 +9,4 @@
 #ifndef PCH_TERM_H
 #define PCH_TERM_H
 
-#include "optionparser.h"
-
 #endif //PCH_TERM_H

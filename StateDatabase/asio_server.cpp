@@ -68,7 +68,7 @@ void asio_server::handle_connection_close(tcp_connection& conn)
 	io_service_.post(boost::bind(&asio_server::handle_connection_remove, this, conn.get_id()));
 }
 
-void asio_server::handle_connection_remove(std::string connId)
+void asio_server::handle_connection_remove(const std::string& connId)
 {
 	connections.erase(connId);
 	logger_->debug("Connection {} were removed from hashmap", connId);
@@ -86,6 +86,7 @@ void asio_server::init_dispatcher()
 	dispatcher_.register_handler<handlers::ping_handler>(commands::request_ping);
 	dispatcher_.register_handler(commands::request_get, handlers::process_message(handlers::get_handler()));
 	dispatcher_.register_handler(commands::request_set, handlers::process_message(handlers::set_handler()));
+	dispatcher_.register_handler(commands::request_delete, handlers::process_message(handlers::delete_handler()));
 	dispatcher_.register_handler<handlers::get_all_handler>(commands::request_get_all);
 }
 
@@ -288,7 +289,7 @@ void asio_server::handlers::delete_handler::operator()(tcp_connection& conn, asi
 {
 	char* key = msgp.as_cstr();
 	size_t keyHash = make_hash(key);
-	server.logger_->debug("Received GET from {}, {}", keyHash, key);
+	server.logger_->debug("Received DELETE for {}, {}", keyHash, key);
 
 	bool deleted = server.db_.delete_key(keyHash);
 
