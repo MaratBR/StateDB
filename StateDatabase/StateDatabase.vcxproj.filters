@@ -48,9 +48,6 @@
     <ClInclude Include="exceptions.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="flags.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
     <ClInclude Include="globals.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
@@ -148,6 +145,9 @@
       <Filter>Файлы заголовков\net</Filter>
     </ClInclude>
     <ClInclude Include="dtypes_utils.h">
+      <Filter>Файлы заголовков\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="flags.h">
       <Filter>Файлы заголовков\utils</Filter>
     </ClInclude>
   </ItemGroup>

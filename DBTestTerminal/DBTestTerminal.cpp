@@ -45,18 +45,6 @@ void prepare()
 
 int main()
 {
-	/*statedb::db_object obj;
-
-	for (auto p : statedb::dtypes::implementors())
-	{
-		obj.set_type(p.first);
-		std::cout << (int)obj.get_type();
-	}
-	obj.set_type(STATEDB_DTYPE_BLOB);
-
-	
-	int a = sizeof(statedb::db_object);
-	return 0;*/
 	prepare();
 
 	show_header();
@@ -72,20 +60,4 @@ int main()
 
 	server.start_listening();
 	server.run();
-
-	
-
-	
-
-	time_t rawtime;
-	tm timeinfo;
-	char* buffer = new char[strlen(STATEDB_DEFAULT_DB_FILE) + 80];
-	memcpy_s(buffer, strlen(STATEDB_DEFAULT_DB_FILE), STATEDB_DEFAULT_DB_FILE, strlen(STATEDB_DEFAULT_DB_FILE));
-
-	time(&rawtime);
-	localtime_s(&timeinfo, &rawtime);
-	strftime(buffer + strlen(STATEDB_DEFAULT_DB_FILE), 80, "%d-%m-%YT%H-%M-%S", &timeinfo);
-
-	std::filesystem::copy_file(STATEDB_DEFAULT_DB_FILE, buffer);
-	std::filesystem::remove(std::filesystem::current_path() / STATEDB_DEFAULT_DB_FILE);
 }

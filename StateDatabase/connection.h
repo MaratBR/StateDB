@@ -6,13 +6,6 @@
 #include "net_message.h"
 #include "empty_handler.h"
 
-/* Main connection class. 
- * Implements read and write operations, timeout and pending operation queue.
- * TODOS:
- *	- Unify read/write operation methods for dynamic (aka "raw binary") and static operations (the ones that can be used for reading particular structure from socket) 
- */
-
-
 _BEGIN_STATEDB_NET
 
 class tcp_connection

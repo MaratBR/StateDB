@@ -163,7 +163,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="optionparser.h" />
     <ClInclude Include="pch_terminal.h" />
   </ItemGroup>
   <ItemGroup>
