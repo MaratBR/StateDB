@@ -57,12 +57,6 @@
     <ClInclude Include="list.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="log_utils.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
-    <ClInclude Include="net_utils.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
     <ClInclude Include="segment_container.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
@@ -154,9 +148,6 @@
   <ItemGroup>
     <ClCompile Include="pch.cpp">
       <Filter>Исходные файлы</Filter>
-    </ClCompile>
-    <ClCompile Include="net_utils.cpp">
-      <Filter>Исходные файлы\utils</Filter>
     </ClCompile>
     <ClCompile Include="utils.cpp">
       <Filter>Исходные файлы\utils</Filter>

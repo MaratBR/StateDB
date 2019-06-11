@@ -2,8 +2,6 @@
 
 // Debug stuff
 
-// TODO Rename DEBUG to IS_DEBUG to prevend collision with actual DEBUG from GCC and other compilers
-
 #define _DEBUG_IS_DEFAULT false
 #ifndef DEBUG
 #	ifdef _DEBUG
@@ -28,18 +26,12 @@
 #	define _D(x)
 #endif
 
-#define _REMOVE_ME(x) _D(x)
-
 #ifdef DEBUG
 #	define _DD(debug, release) debug
 #else
 #	define _DD(debug, release) release
 #endif
 #define _NOTHING
-
-#define _LOG(x)  do { _STD cerr << (x); } while(0)
-#define DEBUG_LOG(x) _D( _LOG(x) )
-
 
 #ifdef DEBUG
 #	include <iostream>
@@ -58,7 +50,7 @@
 #define _STRSTR2(x) _STRSTR3(x)
 #define _STRSTR3(x) #x
 
-// Chck that pointer is not nullptr 
+// Check that pointer is not nullptr 
 #define _ENSUREDEL(x) do { if ((x) != nullptr) { delete(x); } } while(0)
 
 // Check non zero value
@@ -88,9 +80,4 @@ using byte_t = char;
 #define _END_STATEDB_BPT } _END_STATEDB
 
 #define TYPE_NAME(t) typeid(t).name()
-#define TYPE_NAME_VAL(val) TYPE_NAME(decltype(val))
-#define TYPE_NAME_PTR(ptr) TYPE_NAME_VAL(*ptr)
-#define TYPE_NAME_THIS TYPE_NAME_PTR(this)
-
-
 

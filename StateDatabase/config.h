@@ -1,13 +1,6 @@
 #pragma once
 
-// DB features and settings
-#define STATEDB_CHANGES_TRACING_MODE_ALWAYS		2	// Always notify clients about new value
-#define STATEDB_CHANGES_TRACING_MODE_DEMAND		1	// Don't notify but support CACHE_CHECK_CMD
-#define STATEDB_CHANGES_TRACING_MODE_DISABLED	0	// Don't notify and don't support CACHE_CHECK_CMD
-
-#ifndef STATEDB_CHANGES_TRACING_MODE
-#	define STATEDB_CHANGES_TRACING_MODE STATEDB_CHANGES_TRACING_MODE_ALWAYS
-#endif
+// DB settings
 
 #ifndef STATEDB_CHANGES_INCLUDE_VALUE
 #	define STATEDB_CHANGES_INCLUDE_VALUE false
@@ -54,8 +47,4 @@
 
 #include "commands.h"
 
-#define STATEDB_USER_DTYPE_LOW 256 // DEPRECATED Initially when I thought about giving the client opportunity to create custom types, this was a minimal ID for user-defined type
-
 #define STATEDB_PROTOCOL_VERSION 1
-
-

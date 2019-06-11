@@ -2,7 +2,6 @@
 #include "pch.h"
 #include "dynamic_storage.h"
 #include "logging.h"
-#include "net_utils.h"
 #include "net_message.h"
 #include "empty_handler.h"
 

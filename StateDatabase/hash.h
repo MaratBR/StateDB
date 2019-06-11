@@ -27,25 +27,6 @@ auto make_hash(T & val)
 {
 	return STATEDB_HASH_IMPL<T>()(val);
 }
-
-inline void hash_combine(std::size_t& seed) { }
-
-template <typename T, typename... Rest>
-inline void hash_combine(std::size_t& seed, const T& v, Rest... rest) {
-	std::hash<T> hasher;
-	seed ^= hasher(v) + 0x9e3779b9 + (seed << 6) + (seed >> 2);
-	hash_combine(seed, rest...);
-}
-
-#define MAKE_HASHABLE(type, ...) \
-template<> struct ::std::hash<type> {\
-    ::std::size_t operator()(const type &_) const {\
-        ::std::size_t ret = 0;\
-        ::statedb::hash_combine(ret, __VA_ARGS__);\
-        return ret;\
-    }\
-};
-
 _END_STATEDB
 
 // https://gist.github.com/codebrainz/8ece2a9015a3ed0d260f

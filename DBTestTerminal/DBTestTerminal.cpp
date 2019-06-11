@@ -5,15 +5,9 @@
 #include <locale>
 #include <filesystem>
 #include <iostream>
-
 using namespace std;
-
 #define _TRY try {
-#define _CRITICAL_CATCH } \
-catch(::statedb::db_exception exc) { \
-	spdlog::critical(exc.what()); \
-	exit(1); \
-}
+#define _CRITICAL_CATCH } catch(::statedb::db_exception exc) { spdlog::critical(exc.what()); exit(1); }
 
 void show_header()
 {
@@ -30,14 +24,11 @@ void show_header()
 		<< STATEDB_CREDITS
 		<< endl;
 }
-
 std::shared_ptr<spdlog::logger> global_logger;
-
 void prepare()
 {
 	global_logger = statedb::logging::get_global_logger();
 	SetConsoleOutputCP(CP_UTF8);
-	setlocale(LC_ALL, "Russian");
 #ifdef DEBUG
 	spdlog::set_level(spdlog::level::debug);
 #endif
@@ -46,15 +37,11 @@ void prepare()
 int main()
 {
 	prepare();
-
 	show_header();
-
 	statedb::db_wrapper dbw(boost::filesystem::current_path());
-
 	_TRY
 		dbw.load_data();
 	_CRITICAL_CATCH
-
 	statedb::net::asio_server server(boost::asio::ip::tcp::endpoint(
 		boost::asio::ip::address_v4::loopback(), 3456), dbw.get_inner().value());
 

@@ -193,10 +193,8 @@
     <ClInclude Include="leaf.h" />
     <ClInclude Include="list.h" />
     <ClInclude Include="logging.h" />
-    <ClInclude Include="log_utils.h" />
     <ClInclude Include="memory_ptr.h" />
     <ClInclude Include="net_message.h" />
-    <ClInclude Include="net_utils.h" />
     <ClInclude Include="object.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="segment_container.h" />
@@ -214,7 +212,6 @@
     <ClCompile Include="format_utils.cpp" />
     <ClCompile Include="memory_ptr.cpp" />
     <ClCompile Include="net_message.cpp" />
-    <ClCompile Include="net_utils.cpp" />
     <ClCompile Include="object.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
